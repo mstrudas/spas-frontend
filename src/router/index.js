@@ -1,17 +1,40 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home.vue'
+
+import CustomerList from '../views/CustomerList.vue'
+import CustomerEdit from '../views/CustomerEdit.vue'
 import Login from '../views/Login.vue'
+
 import store from '@/store'
 
+
 Vue.use(Router)
+
+const EmptyComponent = {
+  template: ''
+}
 
 const router = new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: EmptyComponent
+    },
+    {
+      path: '/customers',
+      name: 'customers',
+      component: CustomerList
+    },
+    {
+      path: 'customers/:id/view?',
+      name: 'viewCustomer',
+      component: EmptyComponent
+    },
+    {
+      path: '/customers/:id/edit',
+      name: 'editCustomer',
+      component: CustomerEdit
     },
     {
       path: '/login',

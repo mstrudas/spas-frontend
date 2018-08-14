@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="isAuth">
+  <div v-if="isAuth">
     <v-navigation-drawer
       temporary
       :value="drawer"
@@ -11,6 +11,7 @@
           value="true"
           v-for="(item, i) in items"
           :key="i"
+          :to="item.path"
         >
           <v-list-tile-action>
             <v-icon v-html="item.icon"></v-icon>
@@ -22,7 +23,7 @@
       </v-list>
     </v-navigation-drawer>
     <top-bar></top-bar>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -33,21 +34,14 @@ export default {
   data () {
     return {
       clipped: false,
-      fixed: false,
-      items: [{
-        icon: 'home',
-        title: 'Home'
-      },
-      {
-        icon: 'supervisor_account',
-        title: 'Customers'
-      }]
+      fixed: false
     }
   },
   computed: {
     ...mapState({
       isAuth: state => state.isAuth,
-      drawer: state => state.menu.drawer
+      drawer: state => state.menu.drawer,
+      items: state => state.menu.items
     })
   },
   methods: {

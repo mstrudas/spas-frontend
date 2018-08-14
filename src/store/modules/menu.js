@@ -1,5 +1,31 @@
 const state = {
-  drawer: false
+  drawer: false,
+  items: [{
+        icon: 'home',
+        title: 'Home',
+        path: '/'
+      },
+      {
+        icon: 'supervisor_account',
+        title: 'Customers',
+        path: '/customers'
+      },
+      {
+        icon: 'library_add',
+        title: 'Add Customer (Test)',
+        path: '/customers/new'
+      },
+      {
+        icon: 'group',
+        title: 'View Customer 10 (Test)',
+        path: '/customers/10/view'
+      },
+      {
+        icon: 'edit',
+        title: 'Edit Customer 10 (Test)',
+        path: '/customers/10/edit'
+      }
+    ]
 }
 
 const getters = {
