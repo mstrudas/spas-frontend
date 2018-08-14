@@ -1,11 +1,11 @@
 <template>
   <v-toolbar
-      app
+    app
     >
       <v-toolbar-side-icon @click.stop="toggleMenu"></v-toolbar-side-icon>
       <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-icon @click="logout">remove_circle</v-icon>
+      <v-btn @click="logout" color="primary">Log Out</v-btn>
     </v-toolbar>
 </template>
 
