@@ -1,6 +1,6 @@
 <template>
 <v-container grid-list-md>
-  <v-form>
+  <v-form ref="form" lazy-validation>
     <v-toolbar>
       <v-toolbar-title>Edit Customer</v-toolbar-title>
     </v-toolbar>
@@ -14,12 +14,14 @@
             <v-text-field
               v-model="customer.firstName"
               label="First Name"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
           <v-flex xs8 md6>
             <v-text-field
               v-model="customer.lastName"
               label="Last Name"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -45,6 +47,9 @@
                   <v-text-field
                     label="Phone Number"
                     v-model="phone.number"
+                    mask="phone"
+                    :rules="[required, phoneNumber]"
+                    required
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs2 md2>
@@ -52,6 +57,7 @@
                     :items="['Home', 'Work', 'Cell', 'Other']"
                     label="Type"
                     v-model="phone.type"
+                    :rules="[required]"
                   ></v-select>
                 </v-flex>
                 <v-flex xs2 hidden-md-and-up>
@@ -97,6 +103,7 @@
             <v-text-field
               v-model="customer.address"
               label="Street Address"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
           <v-flex xs2 md2>
@@ -104,12 +111,14 @@
               label="Type"
               :items="['None', 'Apt', 'Suite', 'Lot', 'Other']"
               v-model="customer.addressType"
+              :rules="[required]"
             ></v-select>
           </v-flex>
           <v-flex xs6 md4 v-if="customer.addressType != 'None'">
             <v-text-field
               v-model="customer.address2"
               :label="customer.addressType + ' #'"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -118,6 +127,7 @@
             <v-text-field
               v-model="customer.city"
               label="City"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
           <v-flex xs2 md2>
@@ -125,12 +135,14 @@
               v-model="customer.state"
               :items="states"
               label="State"
+              :rules="[required]"
             ></v-select>
           </v-flex>
           <v-flex xs4 md4>
             <v-text-field
               label="Zip Code"
               v-model="customer.zip"
+              :rules="[required]"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -139,11 +151,12 @@
         </v-flex>
       </v-layout>
       <v-layout justify-space-between row wrap>
-        <v-flex >
+        <v-flex>
           <v-btn color="error">Cancel</v-btn>
         </v-flex>
         <v-flex class="text-xs-right">
           <v-btn color="primary">Save</v-btn>
+          <v-btn color="success" @click="validate()">Save and Add Pool/Spa</v-btn>
         </v-flex>
       </v-layout>
   </v-form>
@@ -177,6 +190,8 @@ export default {
   },
   computed: {
     action() {
+      return 'Edit'
+      /*
       switch (this.$route.params.action.toLowerCase()) {
         case 'edit':
           return 'Edit'
@@ -184,7 +199,7 @@ export default {
           return 'New'
         default:
           return ''
-      }
+      } */
     },
     customerNo() {
       return this.$route.params.id
@@ -195,10 +210,16 @@ export default {
       this.customer.phone.push({number: '', type: ''})
     },
     removePhone(index) {
+      if (index < this.customer.primaryPhone) {
+        this.customer.primaryPhone--
+      }
       this.customer.phone.splice(index, 1);
     },
     changePrimaryPhone(newVal) {
       this.customer.primaryPhone = newVal
+    },
+    validate() {
+      alert(this.$refs.form.validate().toString())
     }
   }
 }
