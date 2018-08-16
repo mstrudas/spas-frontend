@@ -1,173 +1,61 @@
 <template>
 <v-container grid-list-md>
-  <v-form ref="form" lazy-validation>
-    <v-toolbar>
-      <v-toolbar-title>Edit Customer</v-toolbar-title>
-    </v-toolbar>
-      <v-layout row>
-        <v-flex>
-          <v-card>
-            <v-card-title><h3>Customer Information</h3></v-card-title>
-            <v-card-text>
-        <v-layout row wrap>
-          <v-flex xs8 md6>
-            <v-text-field
-              v-model="customer.firstName"
-              label="First Name"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs8 md6>
-            <v-text-field
-              v-model="customer.lastName"
-              label="Last Name"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex xs8 md6>
-            <v-text-field
-              v-model="customer.spouse"
-              label="Spouse's Name"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-      <v-layout row>
-        <v-flex>
-          <v-card>
-            <v-card-title><h3>Contact Information</h3></v-card-title>
-            <v-card-text>
-              <v-layout row wrap v-for="(phone, i) in customer.phone" :key="i">
-                <v-flex xs6 md6>
-                  <v-text-field
-                    label="Phone Number"
-                    v-model="phone.number"
-                    mask="phone"
-                    :rules="[required, phoneNumber]"
-                    required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs2 md2>
-                  <v-select
-                    :items="['Home', 'Work', 'Cell', 'Other']"
-                    label="Type"
-                    v-model="phone.type"
-                    :rules="[required]"
-                  ></v-select>
-                </v-flex>
-                <v-flex xs2 hidden-md-and-up>
-                  <v-switch
-                    label=""
-                    @change="changePrimaryPhone(i)"
-                    :input-value="customer.primaryPhone == i ? 1 : 0"
-                    :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
-                  ></v-switch>
-                </v-flex>
-                <v-flex md2 hidden-xs-only>
-                  <v-switch
-                    label="Primary"
-                    @change="changePrimaryPhone(i)"
-                    :input-value="customer.primaryPhone == i ? 1 : 0"
-                    :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
-                  ></v-switch>
-                </v-flex>
-                <v-flex xs2 md2 class="pt-4" v-if="i + 1 == customer.phone.length">
-                  <v-icon medium
-                    @click="addPhone()"
-                  >add_square</v-icon>
-                </v-flex>
-                <v-flex xs2 md2 class="pt-4" v-else>
-                  <v-icon medium
-                    v-if="i != customer.primaryPhone"
-                    @click="removePhone(i)"
-                  >remove</v-icon>
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-
-      <v-layout row>
-        <v-flex>
-          <v-card>
-            <v-card-title><h3>Billing Address</h3></v-card-title>
-            <v-card-text>
-        <v-layout row wrap>
-          <v-flex xs8 md6>
-            <v-text-field
-              v-model="customer.address"
-              label="Street Address"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 md2>
-            <v-select
-              label="Type"
-              :items="['None', 'Apt', 'Suite', 'Lot', 'Other']"
-              v-model="customer.addressType"
-              :rules="[required]"
-            ></v-select>
-          </v-flex>
-          <v-flex xs6 md4 v-if="customer.addressType != 'None'">
-            <v-text-field
-              v-model="customer.address2"
-              :label="customer.addressType + ' #'"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row>
-          <v-flex xs8 md6>
-            <v-text-field
-              v-model="customer.city"
-              label="City"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs2 md2>
-            <v-select
-              v-model="customer.state"
-              :items="states"
-              label="State"
-              :rules="[required]"
-            ></v-select>
-          </v-flex>
-          <v-flex xs4 md4>
-            <v-text-field
-              label="Zip Code"
-              v-model="customer.zip"
-              :rules="[required]"
-            ></v-text-field>
-          </v-flex>
-        </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-      <v-layout justify-space-between row wrap>
-        <v-flex>
-          <v-btn color="error">Cancel</v-btn>
-        </v-flex>
-        <v-flex class="text-xs-right">
-          <v-btn color="primary">Save</v-btn>
-          <v-btn color="success" @click="validate()">Save and Add Pool/Spa</v-btn>
-        </v-flex>
-      </v-layout>
-  </v-form>
+  <v-layout row>
+    <v-flex xs12>
+      <v-toolbar>
+        <v-toolbar-title>{{ action }} Customer</v-toolbar-title>
+      </v-toolbar>
+    </v-flex>
+  </v-layout>
+  <v-tabs
+    v-model="active"
+    grow
+  >
+    <v-tab
+      ripple
+    >
+      General Info
+    </v-tab>
+    <v-tab-item>
+      <edit-customer
+        :customer="customer"
+      ></edit-customer>
+    </v-tab-item>
+    <v-tab
+      ripple
+    >
+      Pools
+    </v-tab>
+    <v-tab-item></v-tab-item>
+    <v-tab
+      ripple
+    >
+      Spas
+    </v-tab>
+    <v-tab-item></v-tab-item>
+    <v-tab
+      ripple
+    >
+      Notes
+    </v-tab>
+    <v-tab-item>
+      <edit-notes :notes="notes"></edit-notes>
+    </v-tab-item>
+  </v-tabs>
 </v-container>
 </template>
 
 <script>
+import EditCustomer from '@/components/customer/EditInfo.vue'
+import EditNotes from '@/components/customer/EditNotes.vue'
+
 export default {
   data() {
     return {
+      action: 'New',
+      active: 0,
       customer: {
+        id: '',
         firstName: '',
         lastName: '',
         spouse: '',
@@ -183,46 +71,72 @@ export default {
         }],
         primaryPhone: 0
       },
-      states: [
-        'MI', 'IN', 'OH', 'IL'
-      ]
+      notes: [{
+          time: '29 Aug 2018 14:23',
+          note: JSON.stringify('This is a test note\n\nSomething')
+        },
+        {
+          time: '29 Aug 2018 14:23',
+          note: JSON.stringify('This is a test note')
+        }]
     }
+  },
+  components: {
+    EditCustomer,
+    EditNotes
   },
   computed: {
-    action() {
-      return 'Edit'
-      /*
-      switch (this.$route.params.action.toLowerCase()) {
-        case 'edit':
-          return 'Edit'
-        case 'new':
-          return 'New'
-        default:
-          return ''
-      } */
-    },
-    customerNo() {
-      return this.$route.params.id
+    pageType() {
+      let edit = /\/customers\/\d+\/edit/
+      if (this.$route.path == "/customers/new") {
+        return "new"
+      } else if (edit.test(this.$route.path)) {
+        return "edit"
+      } else {
+        return "list"
+      }
     }
   },
+  watch: {
+    '$route.params.id' (to, from) {
+      alert("reloaded data")
+      this.fetchData()
+    }
+  },
+  created () {
+    this.fetchData()
+  },
   methods: {
-    addPhone() {
-      this.customer.phone.push({number: '', type: ''})
-    },
-    removePhone(index) {
-      if (index < this.customer.primaryPhone) {
-        this.customer.primaryPhone--
+    fetchData() {
+      //For Edit
+      if (this.pageType == "edit") {
+        // Actually make axios call, but...
+        this.customer = {
+          id: 10,
+          firstName: 'Michael',
+          lastName: 'Strudas',
+          spouse: 'Sophia',
+          address: '4961 S Roosevelt Rd',
+          address2: '',
+          addressType: 'None',
+          city: 'Stevensville',
+          state: 'MI',
+          zip: '49127',
+          phone: [{
+            number: '2526467161',
+            type: 'Cell'
+          },
+          {
+            number: '2695880652',
+            type: 'Work'
+          }],
+          primaryPhone: 0
+        }
       }
-      this.customer.phone.splice(index, 1);
-    },
-    changePrimaryPhone(newVal) {
-      this.customer.primaryPhone = newVal
-    },
-    validate() {
-      alert(this.$refs.form.validate().toString())
     }
   }
 }
+
 </script>
 
 <style scoped>
