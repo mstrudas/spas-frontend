@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation>
+  <v-form ref="custInfoForm" lazy-validation>
       <v-layout row>
         <v-flex>
           <v-card>
@@ -110,7 +110,7 @@
               :rules="[required]"
             ></v-select>
           </v-flex>
-          <v-flex xs6 md4 v-if="customer.addressType != 'None'">
+          <v-flex xs6 md4 v-if="customer.addressType && customer.addressType != 'None'">
             <v-text-field
               v-model="customer.address2"
               :label="customer.addressType + ' #'"
@@ -186,7 +186,10 @@ export default {
       this.customer.primaryPhone = newVal
     },
     validate() {
-      alert(this.$refs.form.validate().toString())
+      alert(this.$refs.custInfoForm.validate().toString())
+    },
+    reset() {
+      this.$refs.custInfoForm.reset()
     }
   },
   props: ['customer']

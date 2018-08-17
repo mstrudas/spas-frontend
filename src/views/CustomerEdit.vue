@@ -7,47 +7,61 @@
       </v-toolbar>
     </v-flex>
   </v-layout>
-  <v-tabs
-    v-model="active"
-    grow
-  >
-    <v-tab
-      ripple
+    <v-tabs
+      v-model="active"
+      grow
     >
-      General Info
-    </v-tab>
-    <v-tab-item>
-      <edit-customer
-        :customer="customer"
-      ></edit-customer>
-    </v-tab-item>
-    <v-tab
-      ripple
-    >
-      Pools
-    </v-tab>
-    <v-tab-item></v-tab-item>
-    <v-tab
-      ripple
-    >
-      Spas
-    </v-tab>
-    <v-tab-item></v-tab-item>
-    <v-tab
-      ripple
-    >
-      Notes
-    </v-tab>
-    <v-tab-item>
-      <edit-notes :notes="notes"></edit-notes>
-    </v-tab-item>
-  </v-tabs>
+      <v-tab
+        ripple
+      >
+        General Info
+      </v-tab>
+      <v-tab-item>
+        <edit-customer
+          :customer="customer"
+          ref="editCustomer"
+        ></edit-customer>
+      </v-tab-item>
+      <v-tab
+        ripple
+      >
+        Pools
+      </v-tab>
+      <v-tab-item>
+        <edit-pools
+          ref="editPools"
+          :pools="pools"
+        ></edit-pools>
+      </v-tab-item>
+      <v-tab
+        ripple
+      >
+        Spas
+      </v-tab>
+      <v-tab-item></v-tab-item>
+      <v-tab
+        ripple
+      >
+        Notes
+      </v-tab>
+      <v-tab-item>
+        <edit-notes
+          :notes="notes"
+        ></edit-notes>
+      </v-tab-item>
+    </v-tabs>
 </v-container>
 </template>
 
 <script>
+import Axios from 'axios'
 import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
+import EditPools from '@/components/customer/EditPools.vue'
+
+
+// Customer: https://next.json-generator.com/api/json/get/NkmgOparH
+// Pools: https://next.json-generator.com/api/json/get/NyU8dAy8r
 
 export default {
   data() {
@@ -71,6 +85,23 @@ export default {
         }],
         primaryPhone: 0
       },
+      pools: [{
+        id: '',
+        description: '',
+        size: '',
+        filter: '',
+        pump: '',
+        equip: '',
+        generalNotes: [],
+        address: {
+          street: '',
+          type: '',
+          suite: '',
+          city: '',
+          state: '',
+          zip: ''
+        }
+      }],
       notes: [{
           time: '29 Aug 2018 14:23',
           note: JSON.stringify('This is a test note\n\nSomething')
@@ -83,7 +114,8 @@ export default {
   },
   components: {
     EditCustomer,
-    EditNotes
+    EditNotes,
+    EditPools
   },
   computed: {
     pageType() {
@@ -98,12 +130,11 @@ export default {
     }
   },
   watch: {
-    '$route.params.id' (to, from) {
-      alert("reloaded data")
+    '$route.params.id' () {
       this.fetchData()
     }
   },
-  created () {
+  mounted () {
     this.fetchData()
   },
   methods: {
@@ -111,27 +142,38 @@ export default {
       //For Edit
       if (this.pageType == "edit") {
         // Actually make axios call, but...
-        this.customer = {
-          id: 10,
-          firstName: 'Michael',
-          lastName: 'Strudas',
-          spouse: 'Sophia',
-          address: '4961 S Roosevelt Rd',
-          address2: '',
-          addressType: 'None',
-          city: 'Stevensville',
-          state: 'MI',
-          zip: '49127',
-          phone: [{
-            number: '2526467161',
-            type: 'Cell'
-          },
-          {
-            number: '2695880652',
-            type: 'Work'
-          }],
-          primaryPhone: 0
-        }
+        const self = this
+        Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
+          .then(function(response) {
+            self.customer = response.data
+            self.customer.addressType = response.data.suite_type
+            self.customer.address2 = response.data.suite
+            delete self.customer.suite_type
+            delete self.customer.suite
+          })
+        Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
+          .then(function(response) {
+            self.pools = response.data
+          })
+      } else if (this.pageType == "new") {
+          this.customer = {
+            id: '',
+            firstName: '',
+            lastName: '',
+            spouse: '',
+            address: '',
+            address2: '',
+            addressType: '',
+            city: '',
+            state: '',
+            zip: '',
+            phone: [{
+              number: '',
+              type: ''
+            }],
+            primaryPhone: 0
+          }
+          this.$refs.editCustomer.reset()
       }
     }
   }
