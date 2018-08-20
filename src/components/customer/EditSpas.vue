@@ -1,44 +1,78 @@
 <template>
-  <v-form ref="poolsForm">
-    <v-layout row v-for="(pool, i) in pools" :key="i" v-if="pools.length > 0">
+  <v-form ref="spasForm">
+    <v-layout row v-for="(spa, i) in spas" :key="i" v-if="spas.length > 0">
       <v-flex xs12>
         <v-card>
           <v-card-title>
-            <h3>{{ pool.description ? pool.description : "Pool"}}</h3>
+            <h3>{{ spa.description ? spa.description : "Spa"}}</h3>
             <v-spacer></v-spacer>
-            <v-icon color="red" @click="deletePool(i)">delete</v-icon>
+            <v-icon color="red" @click="deleteSpa(i)">delete</v-icon>
           </v-card-title>
           <v-card-text>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
                   label="Description"
-                  v-model="pool.description"
+                  v-model="spa.description"
                 ></v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  label="Size"
-                  v-model="pool.size"
+                  label="Brand"
+                  v-model="spa.brand"
                 ></v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  label="Pump"
-                  v-model="pool.pump"
+                  label="Model"
+                  v-model="spa.model"
                 ></v-text-field>
               </v-flex>
             </v-layout>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
-                  label="Equipment"
-                  v-model="pool.equip"
+                  label="Year"
+                  v-model="spa.year"
                 ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-flex xs6>
+                <v-text-field
+                  label="Purchased From"
+                  v-model="spa.purchasedFrom"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs6>
+                <v-menu
+                  ref="menu"
+                  :close-on-content-click="false"
+                  :value="datePicker == i"
+                  :nudge-right="40"
+                  :return-value.sync="date"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  min-width="290px"
+                >
+                  <v-text-field
+                    slot="activator"
+                    v-model="spa.purchaseDate"
+                    label="Purchase Date"
+                    readonly
+                  ></v-text-field>
+                  <v-date-picker v-model="spa.purchaseDate" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="menu = -1">Cancel</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menu[i].save(date), menu = -1">OK</v-btn>
+                  </v-date-picker>
+                </v-menu>
               </v-flex>
             </v-layout>
             <v-layout row>
@@ -47,58 +81,58 @@
                   <v-spacer></v-spacer>
                   <v-checkbox
                     label="Same as Billing Address"
-                    v-model="pool.useBillingAddress"
+                    v-model="spa.useBillingAddress"
                   ></v-checkbox>
               </v-flex>
             </v-layout>
-            <v-layout row v-if="!pool.useBillingAddress">
+            <v-layout row v-if="!spa.useBillingAddress">
               <v-flex xs8 md6>
                   <v-text-field
                     label="Address"
-                    v-model="pool.address.street"
+                    v-model="spa.address.street"
                   ></v-text-field>
               </v-flex>
               <v-flex xs2 md2>
                 <v-select
                   label="Type"
                   :items="['None', 'Apt', 'Suite', 'Lot', 'Other']"
-                  v-model="pool.address.type"
+                  v-model="spa.address.type"
                 ></v-select>
               </v-flex>
-              <v-flex xs6 md4 v-if="pool.address.type && pool.address.type != 'None'">
+              <v-flex xs6 md4 v-if="spa.address.type && spa.address.type != 'None'">
                 <v-text-field
-                  :label="pool.address.type + '#'"
-                  v-model="pool.address.suite"
+                  :label="spa.address.type + '#'"
+                  v-model="spa.address.suite"
                 ></v-text-field>
               </v-flex>
             </v-layout>
-            <v-layout row v-if="!pool.useBillingAddress">
+            <v-layout row v-if="!spa.useBillingAddress">
               <v-flex xs8 md6>
                 <v-text-field
                   label="City"
-                  v-model="pool.address.city"
+                  v-model="spa.address.city"
                 ></v-text-field>
               </v-flex>
               <v-flex xs2 md2>
                 <v-select
                   label="State"
-                  v-model="pool.address.state"
+                  v-model="spa.address.state"
                   :items="states"
                 ></v-select>
               </v-flex>
               <v-flex xs4 md4>
                 <v-text-field
                   label="Zip Code"
-                  v-model="pool.address.zip"
+                  v-model="spa.address.zip"
                 ></v-text-field>
               </v-flex>
             </v-layout>
-            <v-layout row v-if="!pool.useBillingAddress">
+            <v-layout row>
               <v-flex xs12>
                 <h4>Notes</h4>
               </v-flex>
             </v-layout>
-            <v-layout row v-for="(note, index) in pool.generalNotes" :key="index" v-if="pool.generalNotes.length > 0">
+            <v-layout row v-for="(note, index) in spa.generalNotes" :key="index" v-if="spa.generalNotes.length > 0">
               <v-flex xs3>
                 {{ note.date }}
               </v-flex>
@@ -130,7 +164,7 @@
     </v-layout>
     <v-layout>
       <v-flex xs12 class="text-xs-right">
-        <v-btn color="primary" @click="addPool()">Add Pool</v-btn>
+        <v-btn color="primary" @click="addSpa()">Add Spa</v-btn>
       </v-flex>
     </v-layout>
   </v-form>
@@ -140,12 +174,15 @@
 import { stateAbbrList } from '@/static/states'
 
   export default {
-    props: ['pools'],
+    props: ['spas'],
     data() {
       return {
         states: stateAbbrList,
         newNote: -1,
-        newNoteTxt: ''
+        newNoteTxt: '',
+        datePicker: -1,
+        menu: false,
+        date: ''
       }
     },
     methods: {
@@ -154,27 +191,28 @@ import { stateAbbrList } from '@/static/states'
         this.newNote = val
       },
       saveNote(key) {
-        this.pools[key].generalNotes.push({
+        this.spas[key].generalNotes.push({
           date: "Today",
           noteTxt: this.newNoteTxt
         })
         this.newNoteTxt = ''
         this.newNote = -1
       },
-      deletePool(key) {
-        let dialog = "Are you sure you want to delete " + (this.pools[key].description ? this.pools[key].description : "this pool") + "?"
+      deleteSpa(key) {
+        let dialog = "Are you sure you want to delete " + (this.spas[key].description ? this.spas[key].description : "this spa") + "?"
         let confirmation = confirm(dialog)
         if (confirmation)
-          this.pools.splice(key, 1);
+          this.spas.splice(key, 1);
       },
-      addPool() {
-        this.pools.push({
+      addSpa() {
+        this.spas.push({
           id: '',
           description: '',
-          size: '',
-          filter: '',
-          pump: '',
-          equip: '',
+          brand: '',
+          model: '',
+          year: '',
+          purchaseDate: '',
+          purchaseFrom: '',
           generalNotes: [],
           useBillingAddress: false,
           address: {

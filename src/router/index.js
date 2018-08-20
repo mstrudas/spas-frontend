@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import CustomerList from '../views/CustomerList.vue'
-import CustomerEdit from '../views/CustomerEdit.vue'
+import Customer from '../views/Customer.vue'
 import Login from '../views/Login.vue'
 
 import store from '@/store'
@@ -27,19 +27,19 @@ const router = new Router({
       component: CustomerList
     },
     {
-      path: 'customers/:id/view?',
+      path: '/customers/:id/view',
       name: 'viewCustomer',
-      component: EmptyComponent
+      component: Customer
     },
     {
       path: '/customers/:id/edit',
       name: 'editCustomer',
-      component: CustomerEdit
+      component: Customer
     },
     {
       path: '/customers/new',
       name: 'newCustomer',
-      component: CustomerEdit
+      component: Customer
     },
     {
       path: '/login',

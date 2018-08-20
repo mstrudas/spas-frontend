@@ -11,6 +11,7 @@
               v-model="customer.firstName"
               label="First Name"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
           <v-flex xs8 md6>
@@ -18,6 +19,7 @@
               v-model="customer.lastName"
               label="Last Name"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -26,6 +28,7 @@
             <v-text-field
               v-model="customer.spouse"
               label="Spouse's Name"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -46,6 +49,7 @@
                     mask="phone"
                     :rules="[required, phoneNumber]"
                     required
+                    :readonly="viewonly"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs2 md2>
@@ -54,6 +58,7 @@
                     label="Type"
                     v-model="phone.type"
                     :rules="[required]"
+                    :readonly="viewonly"
                   ></v-select>
                 </v-flex>
                 <v-flex xs2 hidden-md-and-up>
@@ -62,6 +67,7 @@
                     @change="changePrimaryPhone(i)"
                     :input-value="customer.primaryPhone == i ? 1 : 0"
                     :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
+                    :readonly="viewonly"
                   ></v-switch>
                 </v-flex>
                 <v-flex md2 hidden-xs-only>
@@ -70,15 +76,16 @@
                     @change="changePrimaryPhone(i)"
                     :input-value="customer.primaryPhone == i ? 1 : 0"
                     :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
+                    :readonly="viewonly"
                   ></v-switch>
                 </v-flex>
                 <v-flex xs2 md2 class="pt-4" v-if="i + 1 == customer.phone.length">
-                  <v-icon medium
+                  <v-icon medium v-show="!viewonly"
                     @click="addPhone()"
                   >add_square</v-icon>
                 </v-flex>
                 <v-flex xs2 md2 class="pt-4" v-else>
-                  <v-icon medium
+                  <v-icon medium v-show="!viewonly"
                     v-if="i != customer.primaryPhone"
                     @click="removePhone(i)"
                   >remove</v-icon>
@@ -100,6 +107,7 @@
               v-model="customer.address"
               label="Street Address"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
           <v-flex xs2 md2>
@@ -108,6 +116,7 @@
               :items="['None', 'Apt', 'Suite', 'Lot', 'Other']"
               v-model="customer.addressType"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-select>
           </v-flex>
           <v-flex xs6 md4 v-if="customer.addressType && customer.addressType != 'None'">
@@ -115,6 +124,7 @@
               v-model="customer.address2"
               :label="customer.addressType + ' #'"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -124,6 +134,7 @@
               v-model="customer.city"
               label="City"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
           <v-flex xs2 md2>
@@ -132,6 +143,7 @@
               :items="states"
               label="State"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-select>
           </v-flex>
           <v-flex xs4 md4>
@@ -139,6 +151,7 @@
               label="Zip Code"
               v-model="customer.zip"
               :rules="[required]"
+              :readonly="viewonly"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -146,25 +159,21 @@
           </v-card>
         </v-flex>
       </v-layout>
-      <v-layout justify-space-between row wrap>
-        <v-flex>
-          <v-btn color="error">Cancel</v-btn>
-        </v-flex>
+      <v-layout justify-space-between row wrap v-if="!viewonly">
         <v-flex class="text-xs-right">
-          <v-btn color="primary">Save</v-btn>
-          <v-btn color="success" @click="validate()">Save and Add Pool/Spa</v-btn>
+          <v-btn color="success" @click="save()">Save</v-btn>
         </v-flex>
       </v-layout>
   </v-form>
 </template>
 
 <script>
+import { stateAbbrList } from '@/static/states'
+
 export default {
   data() {
     return {
-      states: [
-        'MI', 'IN', 'OH', 'IL'
-      ]
+      states: stateAbbrList
     }
   },
   computed: {
@@ -186,13 +195,18 @@ export default {
       this.customer.primaryPhone = newVal
     },
     validate() {
-      alert(this.$refs.custInfoForm.validate().toString())
+      return this.$refs.custInfoForm.validate()
     },
     reset() {
       this.$refs.custInfoForm.reset()
+    },
+    save() {
+      if (this.validate()) {
+        this.$router.push('/customers/' + this.$route.params.id + '/view')
+      }
     }
   },
-  props: ['customer']
+  props: ['customer', 'viewonly']
 }
 </script>
 

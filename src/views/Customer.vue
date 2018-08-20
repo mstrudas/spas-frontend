@@ -4,6 +4,8 @@
     <v-flex xs12>
       <v-toolbar>
         <v-toolbar-title>{{ action }} Customer</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-icon v-if="pageType == 'view'" @click="$router.push('/customers/' + $route.params.id + '/edit')">edit</v-icon>
       </v-toolbar>
     </v-flex>
   </v-layout>
@@ -19,6 +21,7 @@
       <v-tab-item>
         <edit-customer
           :customer="customer"
+          :viewonly="viewOnly"
           ref="editCustomer"
         ></edit-customer>
       </v-tab-item>
@@ -31,6 +34,7 @@
         <edit-pools
           ref="editPools"
           :pools="pools"
+          :viewonly="viewOnly"
         ></edit-pools>
       </v-tab-item>
       <v-tab
@@ -38,7 +42,13 @@
       >
         Spas
       </v-tab>
-      <v-tab-item></v-tab-item>
+      <v-tab-item>
+        <edit-spas
+          ref="editSpas"
+          :spas="spas"
+          :viewonly="viewOnly"
+        ></edit-spas>
+      </v-tab-item>
       <v-tab
         ripple
       >
@@ -47,6 +57,7 @@
       <v-tab-item>
         <edit-notes
           :notes="notes"
+          :viewonly="viewOnly"
         ></edit-notes>
       </v-tab-item>
     </v-tabs>
@@ -58,6 +69,7 @@ import Axios from 'axios'
 import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
 import EditPools from '@/components/customer/EditPools.vue'
+import EditSpas from '@/components/customer/EditSpas.vue'
 
 
 // Customer: https://next.json-generator.com/api/json/get/NkmgOparH
@@ -66,7 +78,6 @@ import EditPools from '@/components/customer/EditPools.vue'
 export default {
   data() {
     return {
-      action: 'New',
       active: 0,
       customer: {
         id: '',
@@ -85,13 +96,15 @@ export default {
         }],
         primaryPhone: 0
       },
-      pools: [{
+      pools: [],
+      spas: [{
         id: '',
         description: '',
-        size: '',
-        filter: '',
-        pump: '',
-        equip: '',
+        brand: '',
+        model: '',
+        year: '',
+        purchaseDate: '',
+        purchasedFrom: '',
         generalNotes: [],
         address: {
           street: '',
@@ -115,9 +128,13 @@ export default {
   components: {
     EditCustomer,
     EditNotes,
-    EditPools
+    EditPools,
+    EditSpas
   },
   computed: {
+    action() {
+      return this.pageType.charAt(0).toUpperCase() + this.pageType.substr(1)
+    },
     pageType() {
       let edit = /\/customers\/\d+\/edit/
       if (this.$route.path == "/customers/new") {
@@ -125,8 +142,11 @@ export default {
       } else if (edit.test(this.$route.path)) {
         return "edit"
       } else {
-        return "list"
+        return "view"
       }
+    },
+    viewOnly() {
+      return this.pageType == 'view'
     }
   },
   watch: {
@@ -140,7 +160,7 @@ export default {
   methods: {
     fetchData() {
       //For Edit
-      if (this.pageType == "edit") {
+      if (this.pageType == "edit" || this.pageType == 'view') {
         // Actually make axios call, but...
         const self = this
         Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')

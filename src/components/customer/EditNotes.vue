@@ -9,8 +9,7 @@
               <v-flex xs3 md2 class="bold">
                 {{ note.time }}
               </v-flex>
-              <v-flex xs9 md10>
-                {{ JSON.parse(note.note) }}
+              <v-flex xs9 md10 v-html="formatString(note.note)">
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -39,7 +38,7 @@
 
 <script>
   export default {
-    props: ['notes'],
+    props: ['notes', 'viewonly'],
     data() {
       return {
         newNote: false,
@@ -48,12 +47,17 @@
     },
     methods: {
       saveNote() {
+        //Push note to array if Axios call succeeds
         this.notes.push({
           time: new Date(),
           note: JSON.stringify(this.noteText)
         })
         this.noteText = ''
         this.newNote = false
+      },
+      formatString(string) {
+        const regex = /\\n/g
+        return string.replace(regex, "<br/>").slice(1, -1)
       }
     }
   }
