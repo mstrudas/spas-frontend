@@ -204,6 +204,9 @@ import { stateAbbrList } from '@/static/states'
             zip: ''
           }
         })
+      },
+      reset() {
+        this.$refs.poolsForm.reset()
       }
     }
   }
