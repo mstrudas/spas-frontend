@@ -54,7 +54,7 @@
                 </v-flex>
                 <v-flex xs2 md2>
                   <v-select
-                    :items="['Home', 'Work', 'Cell', 'Other']"
+                    :items="['Home', 'Work', 'Cell', 'Fax', 'Other']"
                     label="Type"
                     v-model="phone.type"
                     :rules="[required]"

@@ -28,6 +28,17 @@
       <v-tab
         ripple
       >
+        Card Info
+      </v-tab>
+      <v-tab-item>
+        <edit-card
+          :card="card"
+          :viewonly="viewOnly"
+        ></edit-card>
+      </v-tab-item>
+      <v-tab
+        ripple
+      >
         Pools
       </v-tab>
       <v-tab-item>
@@ -52,7 +63,7 @@
       <v-tab
         ripple
       >
-        Notes
+        Customer Notes
       </v-tab>
       <v-tab-item>
         <edit-notes
@@ -70,6 +81,7 @@ import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
 import EditPools from '@/components/customer/EditPools.vue'
 import EditSpas from '@/components/customer/EditSpas.vue'
+import EditCard from '@/components/customer/EditCard.vue'
 
 
 // Customer: https://next.json-generator.com/api/json/get/NkmgOparH
@@ -95,6 +107,11 @@ export default {
       },
       pools: [],
       spas: [],
+      card: {
+        cardNumber: '',
+        expiration: '',
+        ccv: ''
+      },
       notes: [{
           time: '29 Aug 2018 14:23',
           note: JSON.stringify('This is a test note\n\nSomething')
@@ -109,7 +126,8 @@ export default {
     EditCustomer,
     EditNotes,
     EditPools,
-    EditSpas
+    EditSpas,
+    EditCard
   },
   computed: {
     action() {
