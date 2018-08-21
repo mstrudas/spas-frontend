@@ -14,6 +14,7 @@
                   :type="hideCardNumber ? 'password' : 'text'"
                   :append-icon="hideCardNumber ? 'fa-eye' : 'fa-eye-slash'"
                   @click:append="hideCardNumber = !hideCardNumber"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
               <v-flex xs3 md2>
@@ -21,6 +22,7 @@
                   v-model="card.expiration"
                   label="Expiration"
                   mask="##/##"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
               <v-flex xs3 md2>
@@ -28,6 +30,7 @@
                   v-model="card.ccv"
                   label="CCV"
                   mask="####"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -47,6 +50,11 @@
       }
     },
     computed: {
+    },
+    methods: {
+      reset() {
+        this.$refs.cardForm.reset()
+      }
     }
   }
 </script>
