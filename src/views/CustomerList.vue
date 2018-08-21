@@ -1,25 +1,39 @@
 <template>
     <v-container>
-      <v-layout row class="mb-2">
-        <v-flex xs10>
-          <h2> Customers</h2>
-        </v-flex>
-        <v-flex xs2 class="text-xs-right">
-          <v-btn color="primary" @click="$router.push('/customers/new')">New Customer</v-btn>
-        </v-flex>
-      </v-layout>
       <v-layout row>
         <v-flex xs12>
+          <v-card>
+            <v-card-title>
+              <h2>Customers</h2>&nbsp;&nbsp;&nbsp;
+              <v-icon @click="$router.push('/customers/new')">fa-plus-square</v-icon>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+          </v-card>
           <v-data-table
             :headers="headers"
             :items="dataTable"
+            :search="search"
             class="elevation-1"
           >
+            <v-alert slot="no-results" :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+              <v-spacer></v-spacer>
+                <v-btn @click="$router.push('/customers/new')">New Customer</v-btn>
+            </v-alert>
             <template slot="items" slot-scope="props">
               <tr @click="props.expanded = !props.expanded">
                 <td>{{ props.item.firstName + ' ' + props.item.lastName }}</td>
+                <td></td>
                 <td>{{ props.item.spouse }}</td>
                 <td>{{ props.item.phone[0].number }}</td>
+                <td>{{ props.item.address }} </td>
                 <td>
                   <v-icon v-if="props.item.spa_bool" color="green">fa-check-circle</v-icon>
                   <v-icon v-else color="red">fa-times-circle</v-icon>
@@ -72,6 +86,7 @@ export default {
   },
   data() {
     return {
+      search: '',
       headers: [
           {
             text: 'Name',
@@ -79,8 +94,10 @@ export default {
             sortable: true,
             value: 'lastName'
           },
+          { text: '', sortable: false, value: 'firstName', width: '0%' },
           { text: 'Spouse', value: 'spouse' },
-          { text: 'Phone Number', value: 'phone[0]' },
+          { text: 'Phone Number', value: 'phone[0].number' },
+          { text: 'Street Address', value: 'address' },
           { text: 'Spas', value: 'spa_bool' },
           { text: 'Pools', value: 'pool_bool' },
           { text: 'Edit', sortable: false}
