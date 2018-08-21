@@ -251,6 +251,9 @@ import { stateAbbrList } from '@/static/states'
         }
 
         return false
+      },
+      reset() {
+        this.$refs.spasForm.reset()
       }
     }
   }
