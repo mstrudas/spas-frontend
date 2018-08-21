@@ -16,7 +16,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row  v-if="!newNote">
+    <v-layout row  v-if="!newNote" v-show="!viewonly">
       <v-flex xs2>
         <v-btn @click="newNote = true">Add Note</v-btn>
       </v-flex>

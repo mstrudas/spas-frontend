@@ -6,7 +6,7 @@
           <v-card-title>
             <h3>{{ pool.description ? pool.description : "Pool"}}</h3>
             <v-spacer></v-spacer>
-            <v-icon color="red" @click="deletePool(i)">delete</v-icon>
+            <v-icon v-if="!viewonly" color="red" @click="deletePool(i)">delete</v-icon>
           </v-card-title>
           <v-card-text>
             <v-layout row>
@@ -14,6 +14,7 @@
                 <v-text-field
                   label="Description"
                   v-model="pool.description"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -22,6 +23,7 @@
                 <v-text-field
                   label="Size"
                   v-model="pool.size"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -30,6 +32,7 @@
                 <v-text-field
                   label="Pump"
                   v-model="pool.pump"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -38,6 +41,7 @@
                 <v-text-field
                   label="Equipment"
                   v-model="pool.equip"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -48,6 +52,7 @@
                   <v-checkbox
                     label="Same as Billing Address"
                     v-model="pool.useBillingAddress"
+                    :readonly="viewonly"
                   ></v-checkbox>
               </v-flex>
             </v-layout>
@@ -56,6 +61,7 @@
                   <v-text-field
                     label="Address"
                     v-model="pool.address.street"
+                    :readonly="viewonly"
                   ></v-text-field>
               </v-flex>
               <v-flex xs2 md2>
@@ -63,12 +69,14 @@
                   label="Type"
                   :items="['None', 'Apt', 'Suite', 'Lot', 'Other']"
                   v-model="pool.address.type"
+                  :readonly="viewonly"
                 ></v-select>
               </v-flex>
               <v-flex xs6 md4 v-if="pool.address.type && pool.address.type != 'None'">
                 <v-text-field
                   :label="pool.address.type + '#'"
                   v-model="pool.address.suite"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -77,6 +85,7 @@
                 <v-text-field
                   label="City"
                   v-model="pool.address.city"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
               <v-flex xs2 md2>
@@ -84,12 +93,14 @@
                   label="State"
                   v-model="pool.address.state"
                   :items="states"
+                  :readonly="viewonly"
                 ></v-select>
               </v-flex>
               <v-flex xs4 md4>
                 <v-text-field
                   label="Zip Code"
                   v-model="pool.address.zip"
+                  :readonly="viewonly"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -118,13 +129,20 @@
                 v-model="newNoteTxt"
               ></v-textarea>
             </v-layout>
-            <v-layout row>
+            <v-layout row v-if="!viewonly">
               <v-flex xs2 offset-xs10>
                 <v-btn color="primary" v-if="newNote !== i" @click="addNote(i)">Add Note</v-btn>
                 <v-btn color="primary" v-else @click="saveNote(i)">Save Note</v-btn>
               </v-flex>
             </v-layout>
           </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout v-if="pools.length == 0">
+      <v-flex>
+        <v-card>
+          <v-card-title><h3>No Pools Here</h3></v-card-title>
         </v-card>
       </v-flex>
     </v-layout>
@@ -140,7 +158,7 @@
 import { stateAbbrList } from '@/static/states'
 
   export default {
-    props: ['pools'],
+    props: ['pools', 'viewonly'],
     data() {
       return {
         states: stateAbbrList,

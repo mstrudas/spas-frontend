@@ -10,16 +10,12 @@ import store from '@/store'
 
 Vue.use(Router)
 
-const EmptyComponent = {
-  template: ''
-}
-
 const router = new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: EmptyComponent
+      component: CustomerList
     },
     {
       path: '/customers',

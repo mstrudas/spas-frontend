@@ -90,31 +90,11 @@ export default {
         city: '',
         state: 'MI',
         zip: '',
-        phone: [{
-          number: '',
-          type: ''
-        }],
+        phone: [],
         primaryPhone: 0
       },
       pools: [],
-      spas: [{
-        id: '',
-        description: '',
-        brand: '',
-        model: '',
-        year: '',
-        purchaseDate: '',
-        purchasedFrom: '',
-        generalNotes: [],
-        address: {
-          street: '',
-          type: '',
-          suite: '',
-          city: '',
-          state: '',
-          zip: ''
-        }
-      }],
+      spas: [],
       notes: [{
           time: '29 Aug 2018 14:23',
           note: JSON.stringify('This is a test note\n\nSomething')

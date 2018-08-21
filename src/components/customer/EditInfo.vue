@@ -42,7 +42,7 @@
             <v-card-title><h3>Contact Information</h3></v-card-title>
             <v-card-text>
               <v-layout row wrap v-for="(phone, i) in customer.phone" :key="i">
-                <v-flex xs6 md6>
+                <v-flex xs4 md4>
                   <v-text-field
                     label="Phone Number"
                     v-model="phone.number"
@@ -65,37 +65,39 @@
                   <v-switch
                     label=""
                     @change="changePrimaryPhone(i)"
-                    :input-value="customer.primaryPhone == i ? 1 : 0"
-                    :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
-                    :readonly="viewonly"
+                    :color="isPrimaryColor(i)"
+                    :input-value="isPrimary(i)"
+                    :readonly="viewonly || customer.phone.length == 1 || customer.primaryPhone == i"
                   ></v-switch>
                 </v-flex>
                 <v-flex md2 hidden-xs-only>
                   <v-switch
                     label="Primary"
                     @change="changePrimaryPhone(i)"
-                    :input-value="customer.primaryPhone == i ? 1 : 0"
-                    :disabled="customer.phone.length == 1 || customer.primaryPhone == i"
-                    :readonly="viewonly"
+                    :color="isPrimaryColor(i)"
+                    :input-value="isPrimary(i)"
+                    :readonly="viewonly || customer.phone.length == 1 || customer.primaryPhone == i"
                   ></v-switch>
                 </v-flex>
-                <v-flex xs2 md2 class="pt-4" v-if="i + 1 == customer.phone.length">
+                <v-flex xs1 md1 class="pt-4"
+                    v-if="i != customer.primaryPhone">
                   <v-icon medium v-show="!viewonly"
-                    @click="addPhone()"
-                  >add_square</v-icon>
-                </v-flex>
-                <v-flex xs2 md2 class="pt-4" v-else>
-                  <v-icon medium v-show="!viewonly"
-                    v-if="i != customer.primaryPhone"
                     @click="removePhone(i)"
                   >remove</v-icon>
+                </v-flex>
+              </v-layout>
+              <v-layout row>
+                <v-flex xs8>
+                  <v-btn v-show="!viewonly"
+                    @click="addPhone()"
+                    color="primary"
+                  >Add Phone Number</v-btn>
                 </v-flex>
               </v-layout>
             </v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
-
       <v-layout row>
         <v-flex>
           <v-card>
@@ -138,13 +140,13 @@
             ></v-text-field>
           </v-flex>
           <v-flex xs2 md2>
-            <v-select
+            <v-autocomplete
               v-model="customer.state"
               :items="states"
               label="State"
               :rules="[required]"
               :readonly="viewonly"
-            ></v-select>
+            ></v-autocomplete>
           </v-flex>
           <v-flex xs4 md4>
             <v-text-field
@@ -194,6 +196,17 @@ export default {
     changePrimaryPhone(newVal) {
       this.customer.primaryPhone = newVal
     },
+    isPrimary(val) {
+      if (val == this.customer.primaryPhone) {
+        return true
+      }
+      return false
+    },
+    isPrimaryColor(val) {
+      if (val == this.customer.primaryPhone) {
+        return "primary"
+      }
+    },
     validate() {
       return this.$refs.custInfoForm.validate()
     },
@@ -202,7 +215,7 @@ export default {
     },
     save() {
       if (this.validate()) {
-        this.$router.push('/customers/' + this.$route.params.id + '/view')
+        this.$router.push('/customers/' + 10 + '/view')
       }
     }
   },
