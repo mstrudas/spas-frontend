@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 import router from '@/router'
 
 // Modules
-import Menu from './modules/menu'
-import Customer from './modules/customer'
+import menu from './modules/menu'
+import customer from './modules/customer'
 
 Vue.use(Vuex)
 
@@ -29,7 +29,7 @@ export default new Vuex.Store({
 
   },
   modules: {
-    menu: Menu,
-    customer: Customer
+    menu,
+    customer
   }
 })
