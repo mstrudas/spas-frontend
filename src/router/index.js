@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import Default from '@/layouts/Default.vue'
+
 import CustomerList from '../views/CustomerList.vue'
 import Customer from '../views/Customer.vue'
 import Login from '../views/Login.vue'
@@ -15,27 +17,33 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: CustomerList
-    },
-    {
-      path: '/customers',
-      name: 'customers',
-      component: CustomerList
-    },
-    {
-      path: '/customers/:id/view',
-      name: 'viewCustomer',
-      component: Customer
-    },
-    {
-      path: '/customers/:id/edit',
-      name: 'editCustomer',
-      component: Customer
-    },
-    {
-      path: '/customers/new',
-      name: 'newCustomer',
-      component: Customer
+      component: Default,
+      children: [
+        {
+          path: '',
+          component: CustomerList
+        },
+        {
+          path: 'customers',
+          name: 'customers',
+          component: CustomerList
+        },
+        {
+          path: 'customers/:id/view',
+          name: 'viewCustomer',
+          component: Customer
+        },
+        {
+          path: 'customers/:id/edit',
+          name: 'editCustomer',
+          component: Customer
+        },
+        {
+          path: 'customers/new',
+          name: 'newCustomer',
+          component: Customer
+        }
+      ]
     },
     {
       path: '/login',

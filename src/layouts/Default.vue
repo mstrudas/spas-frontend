@@ -1,5 +1,13 @@
 <template>
-    <router-view></router-view>
+  <v-app>
+    <navigation-bar></navigation-bar>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+    <v-footer>
+      <span>&copy; 2018</span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
