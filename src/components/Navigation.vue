@@ -45,7 +45,7 @@ export default {
     })
   },
   methods: {
-    ...mapMutations([
+    ...mapMutations('menu', [
       'toggleMenu'
     ])
   },

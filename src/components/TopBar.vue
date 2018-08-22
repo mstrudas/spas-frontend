@@ -27,7 +27,7 @@
       ...mapMutations([
         'logout'
       ]),
-      ...mapMutations([
+      ...mapMutations('menu', [
         'toggleMenu'
       ])
     }
