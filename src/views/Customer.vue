@@ -34,6 +34,7 @@
         <edit-card
           :card="card"
           :viewonly="viewOnly"
+          ref="editCard"
         ></edit-card>
       </v-tab-item>
       <v-tab
@@ -86,6 +87,9 @@ import EditCard from '@/components/customer/EditCard.vue'
 
 // Customer: https://next.json-generator.com/api/json/get/NkmgOparH
 // Pools: https://next.json-generator.com/api/json/get/NyU8dAy8r
+// Spas: https://next.json-generator.com/api/json/get/Vy9Ia7H8B
+// Notes: https://next.json-generator.com/api/json/get/VJB-1ES8r
+// Card: https://next.json-generator.com/api/json/get/Ny3JMESIB
 
 export default {
   data() {
@@ -98,28 +102,24 @@ export default {
         spouse: '',
         address: '',
         address2: '',
-        addressType: 'None',
+        addressType: '',
         city: '',
-        state: 'MI',
+        state: '',
         zip: '',
-        phone: [],
+        phone: [{
+          number: '',
+          type: ''
+        }],
         primaryPhone: 0
+      },
+      card: {
+          cardNumber: '',
+          expiration: '',
+          ccv: ''
       },
       pools: [],
       spas: [],
-      card: {
-        cardNumber: '',
-        expiration: '',
-        ccv: ''
-      },
-      notes: [{
-          time: '29 Aug 2018 14:23',
-          note: JSON.stringify('This is a test note\n\nSomething')
-        },
-        {
-          time: '29 Aug 2018 14:23',
-          note: JSON.stringify('This is a test note')
-        }]
+      notes: []
     }
   },
   components: {
@@ -131,8 +131,24 @@ export default {
   },
   computed: {
     action() {
-      return this.pageType.charAt(0).toUpperCase() + this.pageType.substr(1)
+      return this.pageType().charAt(0).toUpperCase() + this.pageType().substr(1)
     },
+    viewOnly() {
+      return this.pageType() == 'view'
+    }
+  },
+  watch: {
+    '$route' () {
+      this.fetchData()
+    },
+    pageType() {
+      this.fetchData()
+    }
+  },
+  created() {
+    this.fetchData()
+  },
+  methods: {
     pageType() {
       let edit = /\/customers\/\d+\/edit/
       if (this.$route.path == "/customers/new") {
@@ -143,22 +159,11 @@ export default {
         return "view"
       }
     },
-    viewOnly() {
-      return this.pageType == 'view'
-    }
-  },
-  watch: {
-    '$route.params.id' () {
-      this.fetchData()
-    }
-  },
-  mounted () {
-    this.fetchData()
-  },
-  methods: {
     fetchData() {
+      this.clearAll();
       //For Edit
       if (this.pageType == "edit" || this.pageType == 'view') {
+        alert('Actually Fetching Data')
         // Actually make axios call, but...
         const self = this
         Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
@@ -173,25 +178,52 @@ export default {
           .then(function(response) {
             self.pools = response.data
           })
-      } else if (this.pageType == "new") {
-          this.customer = {
-            id: '',
-            firstName: '',
-            lastName: '',
-            spouse: '',
-            address: '',
-            address2: '',
-            addressType: '',
-            city: '',
-            state: '',
-            zip: '',
-            phone: [{
-              number: '',
-              type: ''
-            }],
-            primaryPhone: 0
-          }
-          this.$refs.editCustomer.reset()
+
+        Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
+          .then(function(response) {
+            self.spas = response.data
+          })
+        Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
+          .then(function(response) {
+            self.notes = response.data
+          })
+        Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
+          .then(function(response) {
+            self.card = response.data
+          })
+      }
+    },
+    resetAll() {
+      this.$refs.editCustomer.reset()
+      this.$refs.editPools.reset()
+      this.$refs.editSpas.reset()
+      this.$refs.editCard.reset()
+    },
+    clearAll() {
+      this.customer = {
+        id: '',
+        firstName: '',
+        lastName: '',
+        spouse: '',
+        address: '',
+        address2: '',
+        addressType: '',
+        city: '',
+        state: '',
+        zip: '',
+        phone: [{
+          number: '',
+          type: ''
+        }],
+        primaryPhone: 0
+      }
+      this.notes = []
+      this.pools = []
+      this.spas = []
+      this.card = {
+          cardNumber: '',
+          expiration: '',
+          ccv: ''
       }
     }
   }
