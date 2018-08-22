@@ -33,7 +33,9 @@ const getters = {
 }
 
 const mutations = {
-
+  UPDATE_CUSTOMER: (state, payload) => {
+    state.customer.info = payload
+  }
 
 }
 
@@ -43,11 +45,12 @@ const actions = {
       // Actually make axios call, but...
     Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
       .then(function(response) {
-        self.customer = response.data
-        self.customer.addressType = response.data.suite_type
-        self.customer.address2 = response.data.suite
-        delete self.customer.suite_type
-        delete self.customer.suite
+        let customer = response.data
+        customer.addressType = response.data.suite_type
+        customer.address2 = response.data.suite
+        delete customer.suite_type
+        delete customer.suite
+        commit('UPDATE_CUSTOMER', customer)
       })
   },
   fetchPools() {
@@ -77,6 +80,7 @@ const actions = {
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,
