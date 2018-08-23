@@ -7,6 +7,7 @@ import CustomerList from '../views/CustomerList.vue'
 import Customer from '../views/Customer.vue'
 import Login from '../views/Login.vue'
 import Print from '../views/Print.vue'
+import NotFound from '@/layouts/404.vue'
 
 import store from '@/store'
 
@@ -55,6 +56,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '*',
+      name: 'notFound',
+      component: NotFound
     }
   ]
 })
