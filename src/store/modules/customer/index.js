@@ -29,20 +29,47 @@ const state = {
 }
 
 const getters = {
+  getMode(state, getters, rootState) {
+    let edit = /\/customers\/\d+\/edit/
+    if (rootState.route.path == "/customers/new") {
+      return "new"
+    } else if (edit.test(rootState.route.path)) {
+      return "edit"
+    } else {
+      return "view"
+    }
+  }
 
 }
 
 const mutations = {
-  UPDATE_CUSTOMER: (state, payload) => {
-    state.customer.info = payload
+  SET_CUSTOMER: (state, payload) => {
+    state.info = payload
+  },
+  SET_POOLS: (state, payload) => {
+    state.pools = payload
+  },
+  SET_SPAS: (state, payload) => {
+    state.spas = payload
+  },
+  SET_NOTES: (state, payload) => {
+    state.notes = payload
+  },
+  SET_CARD: (state, payload) => {
+    state.card = payload
   }
 
 }
 
 const actions = {
+  fetchAll({ dispatch }) {
+    dispatch('fetchCustomer')
+    dispatch('fetchPools')
+    dispatch('fetchSpas')
+    dispatch('fetchNotes')
+    dispatch('fetchCard')
+  },
   fetchCustomer({ commit }) {
-    //For Edit
-      // Actually make axios call, but...
     Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
       .then(function(response) {
         let customer = response.data
@@ -50,31 +77,31 @@ const actions = {
         customer.address2 = response.data.suite
         delete customer.suite_type
         delete customer.suite
-        commit('UPDATE_CUSTOMER', customer)
+        commit('SET_CUSTOMER', customer)
       })
   },
-  fetchPools() {
+  fetchPools({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
       .then(function(response) {
-        self.pools = response.data
+        commit('SET_POOLS', response.data)
       })
   },
-  fetchSpas() {
+  fetchSpas({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
       .then(function(response) {
-        self.spas = response.data
+        commit('SET_SPAS', response.data)
       })
   },
-  fetchNotes() {
+  fetchNotes({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
       .then(function(response) {
-        self.notes = response.data
+        commit('SET_NOTES', response.data)
       })
   },
-  fetchCard() {
+  fetchCard({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
       .then(function(response) {
-        self.card = response.data
+        commit('SET_CARD', response.data)
       })
   }
 }
