@@ -77,7 +77,8 @@
 </template>
 
 <script>
-import Axios from 'axios'
+import { mapActions, mapState, mapGetters } from 'vuex'
+
 import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
 import EditPools from '@/components/customer/EditPools.vue'
@@ -94,32 +95,7 @@ import EditCard from '@/components/customer/EditCard.vue'
 export default {
   data() {
     return {
-      active: 0,
-      customer: {
-        id: '',
-        firstName: '',
-        lastName: '',
-        spouse: '',
-        address: '',
-        address2: '',
-        addressType: '',
-        city: '',
-        state: '',
-        zip: '',
-        phone: [{
-          number: '',
-          type: ''
-        }],
-        primaryPhone: 0
-      },
-      card: {
-          cardNumber: '',
-          expiration: '',
-          ccv: ''
-      },
-      pools: [],
-      spas: [],
-      notes: []
+      active: 0
     }
   },
   components: {
@@ -130,6 +106,13 @@ export default {
     EditCard
   },
   computed: {
+    ...mapState({
+      customer: state => state.customer.info,
+      card: state => state.customer.card,
+      pools: state => state.customer.pools,
+      spas: state => state.customer.spas,
+      notes: state => state.customer.notes
+    }),
     action() {
       return this.pageType().charAt(0).toUpperCase() + this.pageType().substr(1)
     },
@@ -149,50 +132,12 @@ export default {
     this.fetchData()
   },
   methods: {
-    pageType() {
-      let edit = /\/customers\/\d+\/edit/
-      if (this.$route.path == "/customers/new") {
-        return "new"
-      } else if (edit.test(this.$route.path)) {
-        return "edit"
-      } else {
-        return "view"
-      }
-    },
-    fetchData() {
-      this.clearAll();
-      //For Edit
-      if (this.pageType == "edit" || this.pageType == 'view') {
-        alert('Actually Fetching Data')
-        // Actually make axios call, but...
-        const self = this
-        Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
-          .then(function(response) {
-            self.customer = response.data
-            self.customer.addressType = response.data.suite_type
-            self.customer.address2 = response.data.suite
-            delete self.customer.suite_type
-            delete self.customer.suite
-          })
-        Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
-          .then(function(response) {
-            self.pools = response.data
-          })
-
-        Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
-          .then(function(response) {
-            self.spas = response.data
-          })
-        Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
-          .then(function(response) {
-            self.notes = response.data
-          })
-        Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
-          .then(function(response) {
-            self.card = response.data
-          })
-      }
-    },
+    ...mapActions('customer', {
+      fetchData: 'fetchAll'
+    }),
+    ...mapGetters('customer', {
+      pageType: 'getMode'
+    }),
     resetAll() {
       this.$refs.editCustomer.reset()
       this.$refs.editPools.reset()
