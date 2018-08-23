@@ -6,6 +6,7 @@ import Default from '@/layouts/Default.vue'
 import CustomerList from '../views/CustomerList.vue'
 import Customer from '../views/Customer.vue'
 import Login from '../views/Login.vue'
+import Print from '../views/Print.vue'
 
 import store from '@/store'
 
@@ -37,6 +38,11 @@ const router = new Router({
           path: 'customers/:id/edit',
           name: 'editCustomer',
           component: Customer
+        },
+        {
+          path: 'customers/:id/print',
+          name: 'printCustomer',
+          component: Print
         },
         {
           path: 'customers/new',

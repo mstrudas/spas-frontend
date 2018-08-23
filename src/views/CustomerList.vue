@@ -44,6 +44,7 @@
                 </td>
                 <td>
                   <v-icon @click="$router.push('/customers/' + props.item.id + '/edit')">edit</v-icon>
+                  <v-icon @click="$router.push('customers/' + props.item.id + '/print')">local_printshop</v-icon>
                 </td>
               </tr>
             </template>
@@ -100,7 +101,7 @@ export default {
           { text: 'Street Address', value: 'address' },
           { text: 'Spas', value: 'spa_bool' },
           { text: 'Pools', value: 'pool_bool' },
-          { text: 'Edit', sortable: false}
+          { text: 'Actions', sortable: false}
       ],
       dataTable: []
     }

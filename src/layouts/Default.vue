@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <navigation-bar></navigation-bar>
+    <navigation-bar class="no-print"></navigation-bar>
     <v-content>
       <router-view></router-view>
     </v-content>
-    <v-footer>
+    <v-footer class="no-print">
       <span>&copy; 2018</span>
     </v-footer>
   </v-app>
@@ -31,3 +31,13 @@ export default {
   },
 }
 </script>
+
+<style>
+  @media print
+    {
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+    }
+</style>
