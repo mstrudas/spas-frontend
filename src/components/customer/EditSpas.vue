@@ -192,71 +192,86 @@
 
 <script>
 import { stateAbbrList } from '@/static/states'
+import { blankSpa } from '@/static/customer'
+import { mapActions } from 'vuex'
+import Util from './utility'
 
-  export default {
-    props: ['spas', 'viewonly'],
-    data() {
-      return {
-        states: stateAbbrList,
-        newNote: -1,
-        newNoteTxt: '',
-        datePicker: -1,
-        menu: false,
-        date: ''
-      }
+export default {
+  data() {
+    return {
+      spas: [],
+      states: stateAbbrList,
+      newNote: -1,
+      newNoteTxt: '',
+      datePicker: -1,
+      menu: false,
+      date: ''
+    }
+  },
+  computed: {
+    viewonly() {
+      return this.$store.getters['customer/getMode'] == 'view'
     },
-    methods: {
-      addNote (val) {
-        this.newNoteTxt = ''
-        this.newNote = val
-      },
-      saveNote(key) {
-        this.spas[key].generalNotes.push({
-          date: "Today",
-          noteTxt: this.newNoteTxt
-        })
-        this.newNoteTxt = ''
-        this.newNote = -1
-      },
-      deleteSpa(key) {
-        let dialog = "Are you sure you want to delete " + (this.spas[key].description ? this.spas[key].description : "this spa") + "?"
-        let confirmation = confirm(dialog)
-        if (confirmation)
-          this.spas.splice(key, 1);
-      },
-      addSpa() {
-        this.spas.push({
-          id: '',
-          description: '',
-          brand: '',
-          model: '',
-          year: '',
-          purchaseDate: '',
-          purchaseFrom: '',
-          generalNotes: [],
-          useBillingAddress: false,
-          address: {
-            street: '',
-            type: '',
-            suite: '',
-            city: '',
-            state: '',
-            zip: ''
-          }
-        })
-      },
-      openDatePicker(val) {
-        if (!this.viewonly && this.datePicker == val) {
-          return true
-        }
-
-        return false
-      },
-      reset() {
-        this.$refs.spasForm.reset()
+    mode() {
+      return this.$store.getters['customer/getMode']
+    }
+  },
+  methods: {
+    ...mapActions('customer', ['fetchSpas']),
+    copyObject: Util.copyObject,
+    addNote (val) {
+      this.newNoteTxt = ''
+      this.newNote = val
+    },
+    saveNote(key) {
+      this.spas[key].generalNotes.push({
+        date: "Today",
+        noteTxt: this.newNoteTxt
+      })
+      this.newNoteTxt = ''
+      this.newNote = -1
+    },
+    deleteSpa(key) {
+      let dialog = "Are you sure you want to delete " + (this.spas[key].description ? this.spas[key].description : "this spa") + "?"
+      let confirmation = confirm(dialog)
+      if (confirmation)
+        this.spas.splice(key, 1);
+    },
+    addSpa() {
+      this.spas.push(blankSpa)
+    },
+    openDatePicker(val) {
+      if (!this.viewonly && this.datePicker == val) {
+        return true
       }
+
+      return false
+    },
+    resetData() {
+      this.spas = []
+      this.$forceUpdate()
+    },
+    fetchData() {
+      this.fetchSpas().then(() => {
+        this.copyObject(this.$store.state.customer.spas, this.spas)
+        this.$forceUpdate()
+      })
+    }
+  },
+  watch: {
+    '$route': {
+      handler: function (to)  {
+        const regex = /customers\/\d+\/(edit|view)/
+        if (regex.test(to.path)) {
+          this.fetchData()
+        } else {
+          this.resetData()
+        }
+      },
+      immediate: true
     }
   }
+}
 </script>
 
 <style scoped>

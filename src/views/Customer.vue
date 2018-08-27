@@ -58,7 +58,6 @@
         <edit-pools
         ></edit-pools>
       </v-tab-item>
-      <!--
       <v-tab
         ripple
       >
@@ -68,6 +67,7 @@
         <edit-spas
         ></edit-spas>
       </v-tab-item>
+      <!--
       <v-tab
         ripple
       >

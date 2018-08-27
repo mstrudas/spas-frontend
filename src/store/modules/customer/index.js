@@ -95,10 +95,14 @@ const actions = {
     })
   },
   fetchSpas({ commit }) {
-    Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
-      .then(function(response) {
-        commit('SET_SPAS', response.data)
-      })
+    return new Promise((resolve, reject) => {
+      Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
+        .then(function(response) {
+          commit('SET_SPAS', response.data)
+          resolve()
+        })
+        .catch(() => reject())
+    })
   },
   fetchNotes({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
