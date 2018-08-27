@@ -42,21 +42,56 @@
 </template>
 
 <script>
-  export default {
-    props: ['card', 'viewonly'],
-    data() {
-      return {
-        hideCardNumber: true
-      }
+import { mapActions } from 'vuex'
+import { blankCard } from '@/static/customer'
+import Util from './utility'
+
+export default {
+  data() {
+    return {
+      card: {},
+      hideCardNumber: true
+    }
+  },
+  computed: {
+    viewonly() {
+      return this.$store.getters['customer/getMode'] == 'view'
     },
-    computed: {
+    mode() {
+      return this.$store.getters['customer/getMode']
+    }
+  },
+  methods: {
+    ...mapActions('customer', ['fetchCard']),
+    copyObject: Util.copyObject,
+    reset() {
+      this.$refs.cardForm.reset()
     },
-    methods: {
-      reset() {
-        this.$refs.cardForm.reset()
-      }
+    resetData() {
+      this.card = this.copyObject(blankCard)
+      this.$forceUpdate()
+    },
+    fetchData() {
+      this.fetchCard().then(() => {
+        this.copyObject(this.$store.state.customer.card, this.card)
+        this.$forceUpdate()
+      })
+    }
+  },
+  watch: {
+    '$route': {
+      handler: function (to)  {
+        const regex = /customers\/\d+\/(edit|view)/
+        if (regex.test(to.path)) {
+          this.fetchData()
+        } else {
+          this.resetData()
+        }
+      },
+      immediate: true
     }
   }
+}
 </script>
 
 <style scoped>

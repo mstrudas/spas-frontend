@@ -12,6 +12,7 @@ const state = {
     city: '',
     state: '',
     zip: '',
+    email: '',
     phone: [{
       number: '',
       type: ''
@@ -102,10 +103,14 @@ const actions = {
       })
   },
   fetchCard({ commit }) {
-    Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
-      .then(function(response) {
-        commit('SET_CARD', response.data)
-      })
+    return new Promise((resolve, reject) => {
+      Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
+        .then(function(response) {
+          commit('SET_CARD', response.data)
+          resolve()
+        })
+        .catch(() => reject())
+    })
   },
   resetAll({ commit }) {
     const info =  {
@@ -119,6 +124,7 @@ const actions = {
       city: '',
       state: '',
       zip: '',
+      email: '',
       phone: [{
         number: '',
         type: ''
