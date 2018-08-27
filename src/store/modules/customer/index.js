@@ -70,15 +70,18 @@ const actions = {
     dispatch('fetchCard')
   },
   fetchCustomer({ commit }) {
-    Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
-      .then(function(response) {
-        let customer = response.data
-        customer.addressType = response.data.suite_type
-        customer.address2 = response.data.suite
-        delete customer.suite_type
-        delete customer.suite
-        commit('SET_CUSTOMER', customer)
-      })
+    return new Promise((resolve, reject) => {
+      Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
+        .then(function(response) {
+          let customer = response.data
+          customer.addressType = response.data.suite_type
+          customer.address2 = response.data.suite
+          delete customer.suite_type
+          delete customer.suite
+          commit('SET_CUSTOMER', customer)
+          resolve()
+      }).catch(() => reject())
+    })
   },
   fetchPools({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
@@ -103,6 +106,39 @@ const actions = {
       .then(function(response) {
         commit('SET_CARD', response.data)
       })
+  },
+  resetAll({ commit }) {
+    const info =  {
+      id: '',
+      firstName: '',
+      lastName: '',
+      spouse: '',
+      address: '',
+      address2: '',
+      addressType: '',
+      city: '',
+      state: '',
+      zip: '',
+      phone: [{
+        number: '',
+        type: ''
+      }],
+      primaryPhone: 0
+    }
+    const spas = []
+    const pools = []
+    const card = {
+      cardNumber: '',
+      expiration: '',
+      ccv: ''
+    }
+    const notes = []
+
+    commit('SET_CUSTOMER', info)
+    commit('SET_SPAS', spas)
+    commit('SET_POOLS', pools)
+    commit('SET_CARD', card)
+    commit('SET_NOTES', notes)
   }
 }
 
