@@ -32,7 +32,8 @@ const blankPool = {
     suite: '',
     city: '',
     state: '',
-    zip: ''
+    zip: '',
+    gateCode: ''
   }
 }
 
@@ -52,7 +53,8 @@ const blankSpa = {
     suite: '',
     city: '',
     state: '',
-    zip: ''
+    zip: '',
+    gateCode: ''
   }
 }
 

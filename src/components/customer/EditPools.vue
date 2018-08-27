@@ -104,7 +104,16 @@
                 ></v-text-field>
               </v-flex>
             </v-layout>
-            <v-layout row v-if="!pool.useBillingAddress">
+            <v-layout row>
+              <v-flex xs4>
+                <v-text-field
+                  label="Gate Code"
+                  v-model="pool.address.gateCode"
+                  :readonly="viewonly"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
               <v-flex xs12>
                 <h4>Notes</h4>
               </v-flex>
