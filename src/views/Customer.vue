@@ -2,6 +2,23 @@
 <v-container grid-list-md>
   <v-layout row>
     <v-flex xs12>
+      <v-alert
+        :value="showLeaveWarning"
+        type="warning"
+        transition="scale-transition"
+      >
+        <v-layout row align-content-space-between fill-height>
+          <v-flex>
+            <div class="mt-3">
+              You have unsaved changes. Are you sure you want to leave?
+            </div>
+          </v-flex>
+          <v-flex align-content-end>
+              <v-btn color="red" @click="$router.push(to)">Yes</v-btn>
+              <v-btn color="green" @click="showLeaveWarning = false">No</v-btn>
+        </v-flex>
+        </v-layout>
+    </v-alert>
       <v-toolbar>
         <v-toolbar-title>{{ action }} Customer</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -12,6 +29,7 @@
     <v-tabs
       v-model="active"
       grow
+      show-arrows
     >
       <v-tab
         ripple
@@ -20,9 +38,6 @@
       </v-tab>
       <v-tab-item>
         <edit-customer
-          :customer="customer"
-          :viewonly="viewOnly"
-          ref="editCustomer"
         ></edit-customer>
       </v-tab-item>
       <v-tab
@@ -32,9 +47,6 @@
       </v-tab>
       <v-tab-item>
         <edit-card
-          :card="card"
-          :viewonly="viewOnly"
-          ref="editCard"
         ></edit-card>
       </v-tab-item>
       <v-tab
@@ -44,11 +56,9 @@
       </v-tab>
       <v-tab-item>
         <edit-pools
-          ref="editPools"
-          :pools="pools"
-          :viewonly="viewOnly"
         ></edit-pools>
       </v-tab-item>
+      <!--
       <v-tab
         ripple
       >
@@ -56,9 +66,6 @@
       </v-tab>
       <v-tab-item>
         <edit-spas
-          ref="editSpas"
-          :spas="spas"
-          :viewonly="viewOnly"
         ></edit-spas>
       </v-tab-item>
       <v-tab
@@ -68,16 +75,15 @@
       </v-tab>
       <v-tab-item>
         <edit-notes
-          :notes="notes"
-          :viewonly="viewOnly"
         ></edit-notes>
       </v-tab-item>
+      -->
     </v-tabs>
 </v-container>
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
@@ -85,17 +91,12 @@ import EditPools from '@/components/customer/EditPools.vue'
 import EditSpas from '@/components/customer/EditSpas.vue'
 import EditCard from '@/components/customer/EditCard.vue'
 
-
-// Customer: https://next.json-generator.com/api/json/get/NkmgOparH
-// Pools: https://next.json-generator.com/api/json/get/NyU8dAy8r
-// Spas: https://next.json-generator.com/api/json/get/Vy9Ia7H8B
-// Notes: https://next.json-generator.com/api/json/get/VJB-1ES8r
-// Card: https://next.json-generator.com/api/json/get/Ny3JMESIB
-
 export default {
   data() {
     return {
-      active: 0
+      active: 0,
+      showLeaveWarning: false,
+      changed: false
     }
   },
   components: {
@@ -106,71 +107,34 @@ export default {
     EditCard
   },
   computed: {
-    ...mapState({
-      customer: state => state.customer.info,
-      card: state => state.customer.card,
-      pools: state => state.customer.pools,
-      spas: state => state.customer.spas,
-      notes: state => state.customer.notes
-    }),
-    action() {
-      return this.pageType().charAt(0).toUpperCase() + this.pageType().substr(1)
-    },
-    viewOnly() {
-      return this.pageType() == 'view'
-    }
-  },
-  watch: {
-    '$route' () {
-      this.fetchData()
-    },
-    pageType() {
-      this.fetchData()
-    }
-  },
-  created() {
-    this.fetchData()
-  },
-  methods: {
-    ...mapActions('customer', {
-      fetchData: 'fetchAll'
-    }),
     ...mapGetters('customer', {
       pageType: 'getMode'
     }),
-    resetAll() {
-      this.$refs.editCustomer.reset()
-      this.$refs.editPools.reset()
-      this.$refs.editSpas.reset()
-      this.$refs.editCard.reset()
+    orig() {
+      return {
+        customer: this.$store.state.customer.info,
+        card: this.$store.state.customer.card,
+        pools: this.$store.state.customer.pools,
+        spas: this.$store.state.customer.spas,
+        notes: this.$store.state.customer.notes
+      }
     },
-    clearAll() {
-      this.customer = {
-        id: '',
-        firstName: '',
-        lastName: '',
-        spouse: '',
-        address: '',
-        address2: '',
-        addressType: '',
-        city: '',
-        state: '',
-        zip: '',
-        phone: [{
-          number: '',
-          type: ''
-        }],
-        primaryPhone: 0
-      }
-      this.notes = []
-      this.pools = []
-      this.spas = []
-      this.card = {
-          cardNumber: '',
-          expiration: '',
-          ccv: ''
-      }
+    action() {
+      return this.pageType.charAt(0).toUpperCase() + this.pageType.substr(1)
     }
+  },
+  watch: {
+  },
+  created() {
+  },
+  methods: {
+  },
+  beforeRouteUpdate(to, from, next) {
+    alert('Route update')
+    next()
+  },
+  beforeRouteLeave(to, from, next) {
+    next()
   }
 }
 

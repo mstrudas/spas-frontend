@@ -155,61 +155,81 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { stateAbbrList } from '@/static/states'
+import { blankPool } from '@/static/customer'
+import Util from './utility'
 
-  export default {
-    props: ['pools', 'viewonly'],
-    data() {
-      return {
-        states: stateAbbrList,
-        newNote: -1,
-        newNoteTxt: ''
-      }
+export default {
+  data() {
+    return {
+      pools: [],
+      states: stateAbbrList,
+      newNote: -1,
+      newNoteTxt: ''
+    }
+  },
+  computed: {
+    viewonly() {
+      return this.$store.getters['customer/getMode'] == 'view'
     },
-    methods: {
-      addNote (val) {
-        this.newNoteTxt = ''
-        this.newNote = val
+    mode() {
+      return this.$store.getters['customer/getMode']
+    }
+  },
+  methods: {
+    ...mapActions('customer', ['fetchPools']),
+    copyObject: Util.copyObject,
+    compareChanges: Util.compareChanges,
+    addNote (val) {
+      this.newNoteTxt = ''
+      this.newNote = val
+    },
+    resetData() {
+      this.pools = []
+      this.$forceUpdate()
+    },
+    fetchData() {
+      this.fetchPools().then(() => {
+        this.copyObject(this.$store.state.customer.pools, this.pools)
+        this.$forceUpdate()
+      })
+    },
+    saveNote(key) {
+      this.pools[key].generalNotes.push({
+        date: "Today",
+        noteTxt: this.newNoteTxt
+      })
+      this.newNoteTxt = ''
+      this.newNote = -1
+    },
+    deletePool(key) {
+      let dialog = "Are you sure you want to delete " + (this.pools[key].description ? this.pools[key].description : "this pool") + " and all of its details and history?"
+      let confirmation = confirm(dialog)
+      if (confirmation)
+        this.pools.splice(key, 1);
+    },
+    addPool() {
+      this.pools.push(blankPool)
+    },
+    reset() {
+      this.$refs.poolsForm.reset()
+    }
+  },
+  watch: {
+    '$route': {
+      handler: function (to)  {
+        const regex = /customers\/\d+\/(edit|view)/
+        if (regex.test(to.path)) {
+          this.fetchData()
+        } else {
+          this.resetData()
+        }
       },
-      saveNote(key) {
-        this.pools[key].generalNotes.push({
-          date: "Today",
-          noteTxt: this.newNoteTxt
-        })
-        this.newNoteTxt = ''
-        this.newNote = -1
-      },
-      deletePool(key) {
-        let dialog = "Are you sure you want to delete " + (this.pools[key].description ? this.pools[key].description : "this pool") + "?"
-        let confirmation = confirm(dialog)
-        if (confirmation)
-          this.pools.splice(key, 1);
-      },
-      addPool() {
-        this.pools.push({
-          id: '',
-          description: '',
-          size: '',
-          filter: '',
-          pump: '',
-          equip: '',
-          generalNotes: [],
-          useBillingAddress: false,
-          address: {
-            street: '',
-            type: '',
-            suite: '',
-            city: '',
-            state: '',
-            zip: ''
-          }
-        })
-      },
-      reset() {
-        this.$refs.poolsForm.reset()
-      }
+      immediate: true
     }
   }
+}
 </script>
 
 <style scoped>

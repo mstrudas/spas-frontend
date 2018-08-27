@@ -85,10 +85,14 @@ const actions = {
     })
   },
   fetchPools({ commit }) {
-    Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
-      .then(function(response) {
-        commit('SET_POOLS', response.data)
-      })
+    return new Promise((resolve, reject) => {
+      Axios.get('https://next.json-generator.com/api/json/get/NyU8dAy8r')
+        .then(function(response) {
+          commit('SET_POOLS', response.data)
+          resolve()
+        })
+        .catch(() => reject())
+    })
   },
   fetchSpas({ commit }) {
     Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
