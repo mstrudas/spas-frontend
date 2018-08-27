@@ -233,11 +233,13 @@ export default {
     },
     resetData() {
       this.customer = this.copyObject(blankCustomer)
+      this.$refs.custInfoForm.resetValidation()
       this.$forceUpdate()
     },
     fetchData() {
       this.fetchCustomer().then(() => {
         this.copyObject(this.$store.state.customer.info, this.customer)
+        this.$refs.custInfoForm.resetValidation()
         this.$forceUpdate()
       })
     }
@@ -251,7 +253,9 @@ export default {
         if (regex.test(to.path)) {
           this.fetchData()
         } else {
-          this.resetData()
+          this.$nextTick(function () {
+            this.resetData()
+          })
         }
       },
       immediate: true

@@ -69,6 +69,7 @@ export default {
     },
     resetData() {
       this.card = this.copyObject(blankCard)
+      this.$refs.cardForm.resetValidation()
       this.$forceUpdate()
     },
     fetchData() {
@@ -85,7 +86,9 @@ export default {
         if (regex.test(to.path)) {
           this.fetchData()
         } else {
-          this.resetData()
+          this.$nextTick(function() {
+            this.resetData()
+          })
         }
       },
       immediate: true

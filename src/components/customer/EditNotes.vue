@@ -24,7 +24,7 @@
           <v-card-text>
             <v-layout row>
               <v-flex xs3 md2 class="bold">
-                {{ note.time }}
+                {{ moment(note.time).format("MMM DD, YYYY") }}
               </v-flex>
               <v-flex xs9 md10 v-html="formatString(note.note)">
               </v-flex>
@@ -38,6 +38,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import Moment from 'moment'
 import Util from './utility'
 
 export default {
@@ -60,6 +61,7 @@ export default {
     ...mapActions('customer', ['fetchNotes']),
     compareChanges: Util.compareChanges,
     copyObject: Util.copyObject,
+    moment: Moment,
     saveNote() {
       //Push note to array if Axios call succeeds
       if (this.noteText != '') {

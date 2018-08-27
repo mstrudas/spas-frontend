@@ -154,8 +154,8 @@
               </v-flex>
             </v-layout>
             <v-layout row v-for="(note, index) in spa.generalNotes" :key="index" v-if="spa.generalNotes.length > 0">
-              <v-flex xs3>
-                {{ note.date }}
+              <v-flex xs3 class="bold">
+                {{ moment(note.date).format("MMM DD, YYYY") }}
               </v-flex>
               <v-flex xs9>
                 {{ note.noteTxt }}
@@ -203,6 +203,7 @@
 import { stateAbbrList } from '@/static/states'
 import { blankSpa } from '@/static/customer'
 import { mapActions } from 'vuex'
+import Moment from 'moment'
 import Util from './utility'
 
 export default {
@@ -228,13 +229,14 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSpas']),
     copyObject: Util.copyObject,
+    moment: Moment,
     addNote (val) {
       this.newNoteTxt = ''
       this.newNote = val
     },
     saveNote(key) {
       this.spas[key].generalNotes.push({
-        date: "Today",
+        date: new Date(),
         noteTxt: this.newNoteTxt
       })
       this.newNoteTxt = ''
@@ -284,5 +286,7 @@ export default {
 </script>
 
 <style scoped>
-
+.bold {
+  font-weight: bold;
+}
 </style>

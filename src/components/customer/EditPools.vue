@@ -119,8 +119,8 @@
               </v-flex>
             </v-layout>
             <v-layout row v-for="(note, index) in pool.generalNotes" :key="index" v-if="pool.generalNotes.length > 0">
-              <v-flex xs3>
-                {{ note.date }}
+              <v-flex xs3 class="bold">
+                {{ moment(note.date).format("MMM DD, YYYY") }}
               </v-flex>
               <v-flex xs9>
                 {{ note.noteTxt }}
@@ -165,6 +165,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import Moment from 'moment'
 import { stateAbbrList } from '@/static/states'
 import { blankPool } from '@/static/customer'
 import Util from './utility'
@@ -190,6 +191,7 @@ export default {
     ...mapActions('customer', ['fetchPools']),
     copyObject: Util.copyObject,
     compareChanges: Util.compareChanges,
+    moment: Moment,
     addNote (val) {
       this.newNoteTxt = ''
       this.newNote = val
@@ -206,7 +208,7 @@ export default {
     },
     saveNote(key) {
       this.pools[key].generalNotes.push({
-        date: "Today",
+        date: new Date(),
         noteTxt: this.newNoteTxt
       })
       this.newNoteTxt = ''
@@ -242,5 +244,7 @@ export default {
 </script>
 
 <style scoped>
-
+.bold {
+  font-weight: bold;
+}
 </style>
