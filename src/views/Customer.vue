@@ -67,7 +67,6 @@
         <edit-spas
         ></edit-spas>
       </v-tab-item>
-      <!--
       <v-tab
         ripple
       >
@@ -77,7 +76,6 @@
         <edit-notes
         ></edit-notes>
       </v-tab-item>
-      -->
     </v-tabs>
 </v-container>
 </template>

@@ -105,10 +105,14 @@ const actions = {
     })
   },
   fetchNotes({ commit }) {
-    Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
-      .then(function(response) {
-        commit('SET_NOTES', response.data)
-      })
+    return new Promise((resolve, reject) => {
+      Axios.get('https://next.json-generator.com/api/json/get/VJB-1ES8r')
+        .then(function(response) {
+          commit('SET_NOTES', response.data)
+          resolve()
+        })
+        .catch(() => reject())
+    })
   },
   fetchCard({ commit }) {
     return new Promise((resolve, reject) => {

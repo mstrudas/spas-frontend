@@ -1,6 +1,23 @@
 <template>
 
   <v-form ref="notesForm">
+    <v-layout row  v-if="!newNote" v-show="!viewonly">
+      <v-flex xs2>
+        <v-btn color="primary" @click="newNote = true">Add Note</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-layout row v-else>
+      <v-flex xs12>
+        <v-textarea
+          solo
+          auto-focus
+          v-model="noteText"
+        ></v-textarea>
+        <div class="text-xs-right">
+          <v-btn color="success" @click="saveNote">Save Note</v-btn>
+        </div>
+      </v-flex>
+    </v-layout>
     <v-layout row v-for="(note, i) in notes" :key="i">
       <v-flex xs12>
         <v-card>
@@ -16,51 +33,73 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row  v-if="!newNote" v-show="!viewonly">
-      <v-flex xs2>
-        <v-btn @click="newNote = true">Add Note</v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row v-else>
-      <v-flex xs12>
-        <v-textarea
-          solo
-          auto-focus
-          v-model="noteText"
-        ></v-textarea>
-        <div class="text-xs-right">
-          <v-btn @click="saveNote">Save Note</v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
   </v-form>
 </template>
 
 <script>
-  export default {
-    props: ['notes', 'viewonly'],
-    data() {
-      return {
-        newNote: false,
-        noteText: ''
-      }
+import { mapActions } from 'vuex'
+import Util from './utility'
+
+export default {
+  data() {
+    return {
+      notes: [],
+      newNote: false,
+      noteText: ''
+    }
+  },
+  computed: {
+    viewonly() {
+      return this.$store.getters['customer/getMode'] == 'view'
     },
-    methods: {
-      saveNote() {
-        //Push note to array if Axios call succeeds
+    mode() {
+      return this.$store.getters['customer/getMode']
+    }
+  },
+  methods: {
+    ...mapActions('customer', ['fetchNotes']),
+    compareChanges: Util.compareChanges,
+    copyObject: Util.copyObject,
+    saveNote() {
+      //Push note to array if Axios call succeeds
+      if (this.noteText != '') {
         this.notes.push({
           time: new Date(),
           note: JSON.stringify(this.noteText)
         })
-        this.noteText = ''
-        this.newNote = false
-      },
-      formatString(string) {
-        const regex = /\\n/g
-        return string.replace(regex, "<br/>").slice(1, -1)
       }
+      this.noteText = ''
+      this.newNote = false
+    },
+    formatString(string) {
+      const regex = /\\n/g
+      return string.replace(regex, "<br/>").slice(1, -1)
+    },
+    resetData() {
+      this.notes = []
+      this.$forceUpdate()
+    },
+    fetchData() {
+      this.fetchNotes().then(() => {
+        this.copyObject(this.$store.state.customer.notes, this.notes)
+        this.$forceUpdate()
+      })
+    }
+  },
+  watch: {
+    '$route': {
+      handler: function (to)  {
+        const regex = /customers\/\d+\/(edit|view)/
+        if (regex.test(to.path)) {
+          this.fetchData()
+        } else {
+          this.resetData()
+        }
+      },
+      immediate: true
     }
   }
+}
 </script>
 
 <style scoped>
