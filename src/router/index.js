@@ -5,7 +5,7 @@ import Default from '@/layouts/Default.vue'
 
 import CustomerList from '../views/CustomerList.vue'
 import Customer from '../views/Customer.vue'
-import Login from '../views/Login.vue'
+import Login from '../layouts/Login.vue'
 import Print from '../views/Print.vue'
 import NotFound from '@/layouts/404.vue'
 
@@ -18,11 +18,11 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
       component: Default,
       children: [
         {
           path: '',
+          name: 'home',
           component: CustomerList
         },
         {
