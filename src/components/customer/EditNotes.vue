@@ -1,6 +1,13 @@
 <template>
 
   <v-form ref="notesForm">
+    <v-layout row v-if="notes.length == 0">
+      <v-flex xs12>
+        <v-card>
+          <v-card-title><h3>No Notes Here</h3></v-card-title>
+        </v-card>
+      </v-flex>
+    </v-layout>
     <v-layout row  v-if="!newNote" v-show="!viewonly">
       <v-flex xs2>
         <v-btn color="primary" @click="newNote = true">Add Note</v-btn>
@@ -18,7 +25,7 @@
         </div>
       </v-flex>
     </v-layout>
-    <v-layout row v-for="(note, i) in notes" :key="i">
+    <v-layout row v-for="(note, i) in sortedNotes(notes, 'time')" :key="i">
       <v-flex xs12>
         <v-card>
           <v-card-text>
@@ -61,6 +68,7 @@ export default {
     ...mapActions('customer', ['fetchNotes']),
     compareChanges: Util.compareChanges,
     copyObject: Util.copyObject,
+    sortedNotes: Util.sortedNotes,
     moment: Moment,
     saveNote() {
       //Push note to array if Axios call succeeds
@@ -75,7 +83,7 @@ export default {
     },
     formatString(string) {
       const regex = /\\n/g
-      return string.replace(regex, "<br/>").slice(1, -1)
+      return string.replace(regex, "<br/>")
     },
     resetData() {
       this.notes = []
@@ -85,6 +93,7 @@ export default {
       this.fetchNotes().then(() => {
         this.copyObject(this.$store.state.customer.notes, this.notes)
         this.$forceUpdate()
+        console.log(this.sortedNotes())
       })
     }
   },

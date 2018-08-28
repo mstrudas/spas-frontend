@@ -153,7 +153,7 @@
                 <h4>Notes</h4>
               </v-flex>
             </v-layout>
-            <v-layout row v-for="(note, index) in spa.generalNotes" :key="index" v-if="spa.generalNotes.length > 0">
+            <v-layout row v-for="(note, index) in sortedNotes(spa.generalNotes)" :key="index" v-if="spa.generalNotes.length > 0">
               <v-flex xs3 class="bold">
                 {{ moment(note.date).format("MMM DD, YYYY") }}
               </v-flex>
@@ -229,6 +229,7 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSpas']),
     copyObject: Util.copyObject,
+    sortedNotes: Util.sortedNotes,
     moment: Moment,
     addNote (val) {
       this.newNoteTxt = ''

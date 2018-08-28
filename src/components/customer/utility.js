@@ -1,4 +1,4 @@
-function compareChanges(orig, current) {
+export function compareChanges(orig, current) {
   for (let key in orig) {
     if (orig[key] == current[key]) {
       continue
@@ -11,7 +11,7 @@ function compareChanges(orig, current) {
   return true
 }
 
-function copyObject(orig, newObj = {}) {
+export function copyObject(orig, newObj = {}) {
   for (let key in orig) {
     if (typeof orig[key] == 'object') {
       newObj[key] = this.copyObject(orig[key])
@@ -21,7 +21,14 @@ function copyObject(orig, newObj = {}) {
   return newObj
 }
 
+export function sortedNotes(notes, dateField = "date") {
+  return notes.concat().sort(function(a, b) {
+    return Date.parse(b[dateField]) - Date.parse(a[dateField])
+  })
+}
+
 export default {
   compareChanges,
-  copyObject
+  copyObject,
+  sortedNotes
 }
