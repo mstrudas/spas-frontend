@@ -11,7 +11,14 @@ export function compareChanges(orig, current) {
   return true
 }
 
-export function copyObject(orig, newObj = {}) {
+export function copyObject(orig, newObj = null) {
+  if (!newObj) {
+    if (Array.isArray(orig)) {
+      newObj = []
+    } else {
+      newObj = {}
+    }
+  }
   for (let key in orig) {
     if (typeof orig[key] == 'object') {
       newObj[key] = this.copyObject(orig[key])
