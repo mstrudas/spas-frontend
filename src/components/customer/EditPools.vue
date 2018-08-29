@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Moment from 'moment'
 import { stateAbbrList } from '@/static/states'
 import { blankPool } from '@/static/customer'
@@ -180,12 +180,7 @@ export default {
     }
   },
   computed: {
-    viewonly() {
-      return this.$store.getters['customer/getMode'] == 'view'
-    },
-    mode() {
-      return this.$store.getters['customer/getMode']
-    }
+    ...mapGetters('customer', ['viewonly'])
   },
   methods: {
     ...mapActions('customer', ['fetchPools']),
@@ -203,7 +198,7 @@ export default {
     },
     fetchData() {
       this.fetchPools().then(() => {
-        this.copyObject(this.$store.state.customer.pools, this.pools)
+        this.pools = this.copyObject(this.$store.state.customer.pools)
         this.$forceUpdate()
       })
     },

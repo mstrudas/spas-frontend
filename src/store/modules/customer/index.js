@@ -39,6 +39,9 @@ const getters = {
     } else {
       return "view"
     }
+  },
+  viewonly(state, getters) {
+    return getters.getMode == 'view'
   }
 
 }

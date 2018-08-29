@@ -70,12 +70,10 @@ export default {
     resetData() {
       this.card = this.copyObject(blankCard)
       this.$refs.cardForm.resetValidation()
-      this.$forceUpdate()
     },
     fetchData() {
       this.fetchCard().then(() => {
-        this.copyObject(this.$store.state.customer.card, this.card)
-        this.$forceUpdate()
+        this.card = this.copyObject(this.$store.state.customer.card)
       })
     }
   },

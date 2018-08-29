@@ -81,7 +81,7 @@
                   :readonly="viewonly || customer.phone.length == 1 || customer.primaryPhone == i"
                 ></v-switch>
               </v-flex>
-              <v-flex md2 hidden-xs-only>
+              <v-flex md2 hidden-sm-and-down>
                 <v-switch
                   label="Primary"
                   @change="changePrimaryPhone(i)"
@@ -94,7 +94,7 @@
                   v-if="i != customer.primaryPhone">
                 <v-icon medium v-show="!viewonly"
                   @click="removePhone(i)"
-                >remove</v-icon>
+                >delete</v-icon>
               </v-flex>
             </v-layout>
             <v-layout row>
@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { stateAbbrList } from '@/static/states'
 import { blankCustomer } from '@/static/customer'
 import Util from './utility'
@@ -197,12 +197,7 @@ export default {
     }
   },
   computed: {
-    viewonly() {
-      return this.$store.getters['customer/getMode'] == 'view'
-    },
-    mode() {
-      return this.$store.getters['customer/getMode']
-    }
+    ...mapGetters('customer', ['viewonly'])
   },
   methods: {
     ...mapActions('customer', ['fetchCustomer']),
@@ -219,6 +214,7 @@ export default {
     },
     changePrimaryPhone(newVal) {
       this.customer.primaryPhone = newVal
+      this.$forceUpdate()
     },
     isPrimary(val) {
       if (val == this.customer.primaryPhone) {
@@ -238,7 +234,7 @@ export default {
     },
     fetchData() {
       this.fetchCustomer().then(() => {
-        this.copyObject(this.$store.state.customer.info, this.customer)
+        this.customer = this.copyObject(this.$store.state.customer.info)
         this.$refs.custInfoForm.resetValidation()
         this.$forceUpdate()
       })

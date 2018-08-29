@@ -202,7 +202,7 @@
 <script>
 import { stateAbbrList } from '@/static/states'
 import { blankSpa } from '@/static/customer'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Moment from 'moment'
 import Util from './utility'
 
@@ -219,12 +219,7 @@ export default {
     }
   },
   computed: {
-    viewonly() {
-      return this.$store.getters['customer/getMode'] == 'view'
-    },
-    mode() {
-      return this.$store.getters['customer/getMode']
-    }
+    ...mapGetters('customer', ['viewonly'])
   },
   methods: {
     ...mapActions('customer', ['fetchSpas']),
@@ -265,7 +260,7 @@ export default {
     },
     fetchData() {
       this.fetchSpas().then(() => {
-        this.copyObject(this.$store.state.customer.spas, this.spas)
+        this.spas = this.copyObject(this.$store.state.customer.spas)
         this.$forceUpdate()
       })
     }
