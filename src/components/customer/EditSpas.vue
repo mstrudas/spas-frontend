@@ -150,34 +150,11 @@
             </v-layout>
             <v-layout row>
               <v-flex xs12>
-                <h4>Notes</h4>
-              </v-flex>
-            </v-layout>
-            <v-layout row v-for="(note, index) in sortedNotes(spa.generalNotes)" :key="index" v-if="spa.generalNotes.length > 0">
-              <v-flex xs3 class="bold">
-                {{ moment(note.date).format("MMM DD, YYYY") }}
-              </v-flex>
-              <v-flex xs9>
-                {{ note.noteTxt }}
-              </v-flex>
-            </v-layout>
-            <v-layout v-else>
-              <v-flex xs12>
-                No notes yet.
-              </v-flex>
-            </v-layout>
-            <v-layout row v-if="newNote == i">
-              <v-textarea
-                solo
-                auto-focus
-                v-model="newNoteTxt"
-                :readonly="viewonly"
-              ></v-textarea>
-            </v-layout>
-            <v-layout row>
-              <v-flex xs2 offset-xs10 v-if="!viewonly">
-                <v-btn color="primary" v-if="newNote !== i" @click="addNote(i)">Add Note</v-btn>
-                <v-btn color="primary" v-else @click="saveNote(i)">Save Note</v-btn>
+                <notes-table
+                  title="Spa Notes"
+                  :data="spa.generalNotes"
+                  :readonly="viewonly"
+                ></notes-table>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -205,6 +182,7 @@ import { blankSpa } from '@/static/customer'
 import { mapGetters, mapActions } from 'vuex'
 import Moment from 'moment'
 import Util from './utility'
+import NotesTable from '@/components/customer/NotesTable.vue'
 
 export default {
   data() {
@@ -256,12 +234,10 @@ export default {
     },
     resetData() {
       this.spas = []
-      this.$forceUpdate()
     },
     fetchData() {
       this.fetchSpas().then(() => {
         this.spas = this.copyObject(this.$store.state.customer.spas)
-        this.$forceUpdate()
       })
     }
   },
@@ -277,6 +253,9 @@ export default {
       },
       immediate: true
     }
+  },
+  components: {
+    NotesTable
   }
 }
 </script>

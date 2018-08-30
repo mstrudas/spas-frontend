@@ -1,5 +1,5 @@
 <template>
-<v-container grid-list-md>
+<v-container grid-list-xs>
   <v-layout row>
     <v-flex xs12>
       <v-alert

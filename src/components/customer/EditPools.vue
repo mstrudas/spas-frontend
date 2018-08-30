@@ -113,6 +113,12 @@
                 ></v-text-field>
               </v-flex>
             </v-layout>
+            <notes-table
+              :readonly="viewonly"
+              title="Pool Notes"
+              :data="pool.generalNotes"
+            ></notes-table>
+            <!-- Start Notes
             <v-layout row>
               <v-flex xs12>
                 <h4>Notes</h4>
@@ -144,6 +150,7 @@
                 <v-btn color="primary" v-else @click="saveNote(i)">Save Note</v-btn>
               </v-flex>
             </v-layout>
+            <!-- End Notes -->
           </v-card-text>
         </v-card>
       </v-flex>
@@ -169,6 +176,7 @@ import Moment from 'moment'
 import { stateAbbrList } from '@/static/states'
 import { blankPool } from '@/static/customer'
 import Util from './utility'
+import NotesTable from '@/components/customer/NotesTable.vue'
 
 export default {
   data() {
@@ -235,6 +243,9 @@ export default {
       },
       immediate: true
     }
+  },
+  components: {
+    NotesTable
   }
 }
 </script>
