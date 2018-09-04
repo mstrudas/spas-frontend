@@ -61,7 +61,8 @@ const blankSpa = {
 const blankCard = {
   cardNumber: '',
   expiration: '',
-  ccv: ''
+  ccv: '',
+  prepaid: false
 }
 
 export { blankCustomer, blankPool, blankSpa, blankCard }

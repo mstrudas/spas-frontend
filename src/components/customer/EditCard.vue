@@ -8,7 +8,7 @@
             <v-card-title><h3>Card Information</h3></v-card-title>
             <v-card-text>
               <v-layout row>
-                <v-flex xs8 md6>
+                <v-flex xs6 md6>
                   <v-text-field
                     v-model="card.cardNumber"
                     label="Card Number"
@@ -34,6 +34,12 @@
                     mask="####"
                     :readonly="viewonly"
                   ></v-text-field>
+                </v-flex>
+                <v-flex md2>
+                  <v-checkbox
+                    label="Prepaid"
+                    v-model="card.prepaid"
+                  ></v-checkbox>
                 </v-flex>
               </v-layout>
             </v-card-text>
