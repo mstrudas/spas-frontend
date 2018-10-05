@@ -93,7 +93,7 @@ export default {
   props: {
     data: {
       type: Array,
-      default: []
+      default: () => []
     },
     readonly: {
       type: Boolean,

@@ -118,39 +118,6 @@
               title="Pool Notes"
               :data="pool.generalNotes"
             ></notes-table>
-            <!-- Start Notes
-            <v-layout row>
-              <v-flex xs12>
-                <h4>Notes</h4>
-              </v-flex>
-            </v-layout>
-            <v-layout row v-for="(note, index) in sortedNotes(pool.generalNotes)" :key="index" v-if="pool.generalNotes.length > 0">
-              <v-flex xs3 class="bold">
-                {{ moment(note.date).format("MMM DD, YYYY") }}
-              </v-flex>
-              <v-flex xs9>
-                {{ note.noteTxt }}
-              </v-flex>
-            </v-layout>
-            <v-layout v-else>
-              <v-flex xs12>
-                No notes yet.
-              </v-flex>
-            </v-layout>
-            <v-layout row v-if="newNote == i">
-              <v-textarea
-                solo
-                auto-focus
-                v-model="newNoteTxt"
-              ></v-textarea>
-            </v-layout>
-            <v-layout row v-if="!viewonly">
-              <v-flex xs2 offset-xs10>
-                <v-btn color="primary" v-if="newNote !== i" @click="addNote(i)">Add Note</v-btn>
-                <v-btn color="primary" v-else @click="saveNote(i)">Save Note</v-btn>
-              </v-flex>
-            </v-layout>
-            <!-- End Notes -->
           </v-card-text>
         </v-card>
       </v-flex>

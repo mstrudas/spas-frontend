@@ -27,14 +27,14 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
   export default {
     data: () => ({
       drawer: null
     }),
     methods: {
-      ...mapMutations(['login'])
+      ...mapActions(['login'])
     }
   }
 </script>
