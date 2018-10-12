@@ -229,7 +229,7 @@ export default {
     },
     resetData() {
       this.customer = this.copyObject(blankCustomer)
-      this.$refs.custInfoForm.resetValidation()
+      // this.$refs.custInfoForm.resetValidation()
       this.$forceUpdate()
     },
     fetchData() {
@@ -244,14 +244,12 @@ export default {
   },
   watch: {
     '$route': {
-      handler: function (to)  {
+      handler: function (to) {
         const regex = /customers\/\d+\/(edit|view)/
         if (regex.test(to.path)) {
           this.fetchData()
         } else {
-          this.$nextTick(function () {
-            this.resetData()
-          })
+          this.resetData()
         }
       },
       immediate: true

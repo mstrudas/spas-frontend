@@ -1,7 +1,7 @@
 <template>
   <v-form ref="cardForm" lazy-validation>
-    <v-progress-linear v-if="loading" class="ma-0" :indeterminate="true"></v-progress-linear>
-    <v-container v-if="!loading" class="ma-0 pa-0">
+    <v-progress-linear class="ma-0" :indeterminate="true"></v-progress-linear>
+    <v-container class="ma-0 pa-0">
       <v-layout row>
         <v-flex>
           <v-card>
@@ -93,9 +93,7 @@ export default {
         if (regex.test(to.path)) {
           this.fetchData()
         } else {
-          this.$nextTick(function() {
-            this.resetData()
-          })
+          this.$nextTick(() => this.resetData())
         }
       },
       immediate: true

@@ -39,7 +39,7 @@ export default {
         if (regex.test(to.path)) {
           this.fetchData()
         } else {
-          this.resetData()
+          this.notes = []
         }
       },
       immediate: true
