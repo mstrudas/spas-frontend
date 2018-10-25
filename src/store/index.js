@@ -15,7 +15,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isAuth: true,
+    isAuth: false,
     token: ''
   },
   getters: {

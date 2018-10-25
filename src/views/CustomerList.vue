@@ -17,39 +17,43 @@
             </v-card-title>
           </v-card>
           <v-data-table
+            :loading="loading"
             :headers="headers"
             :items="dataTable"
-            :search="search"
+            :pagination.sync="pagination"
+            :total-items="pagination.totalItems"
+            
+            hide-actions
+            item-key="clientID"
             class="elevation-1"
           >
-            <v-alert slot="no-results" :value="true" color="error" icon="warning">
-              Your search for "{{ search }}" found no results.
-              <v-spacer></v-spacer>
-                <v-btn @click="$router.push('/customers/new')">New Customer</v-btn>
+
+            <v-alert slot="no-data" :value="true" color="warning" icon="warning">
+              No data was found.
             </v-alert>
             <template slot="items" slot-scope="props">
               <tr @click="props.expanded = !props.expanded">
                 <td>{{ props.item.firstName + ' ' + props.item.lastName }}</td>
                 <td></td>
                 <td>{{ props.item.spouse }}</td>
-                <td>{{ props.item.phone[0].number }}</td>
-                <td>{{ props.item.address }} </td>
+                <td>{{ Array.isArray(props.item.phone) ? props.item.phone[0].phone : "" | phoneNumber }}</td>
+                <td>{{ props.item.streetAddress }} </td>
                 <td>
-                  <v-icon v-if="props.item.spa_bool" color="green">fa-check-circle</v-icon>
+                  <v-icon v-if="props.item.spa_bool == 1" color="green">fa-check-circle</v-icon>
                   <v-icon v-else color="red">fa-times-circle</v-icon>
                 </td>
                 <td>
-                  <v-icon v-if="props.item.pool_bool" color="green">fa-check-circle</v-icon>
+                  <v-icon v-if="props.item.pool_bool == 1" color="green">fa-check-circle</v-icon>
                   <v-icon v-else color="red">fa-times-circle</v-icon>
                 </td>
                 <td>
-                  <v-icon @click="$router.push('/customers/' + props.item.id + '/edit')">edit</v-icon>
-                  <v-icon @click="$router.push('customers/' + props.item.id + '/print')">local_printshop</v-icon>
+                  <v-icon @click="$router.push('/customers/' + props.item.clientID + '/edit')">edit</v-icon>
+                  <v-icon @click="$router.push('customers/' + props.item.clientID + '/print')">local_printshop</v-icon>
                 </td>
               </tr>
             </template>
             <template slot="expand" slot-scope="props">
-              <v-card flat>
+              <v-card flat >
                 <v-card-text>
                   <v-layout row>
                     <v-flex xs4>
@@ -71,6 +75,7 @@
               </v-card>
             </template>
           </v-data-table>
+          <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
         </v-flex>
       </v-layout>
     </v-container>
@@ -88,6 +93,12 @@ export default {
   data() {
     return {
       search: '',
+      loading: true,
+      pagination: {
+        rowsPerPage: 25,
+        page: 1,
+        totalItems: 0
+      },
       headers: [
           {
             text: 'Name',
@@ -103,20 +114,74 @@ export default {
           { text: 'Pools', value: 'pool_bool' },
           { text: 'Actions', sortable: false}
       ],
-      dataTable: []
+      dataTable: [],
+      pages: 0
+    }
+  },
+  watch: {
+    pagination: {
+      handler() {
+        this.fetch()
+      },
+      deep: true,
+      immediate: true
+    },
+    search: {
+      handler(criteria, old) {
+        if (criteria.length > 2 || criteria.length === 0) 
+          this.fetch()
+      }
+    }
+  },
+  filters: {
+    phoneNumber(number) {
+      const regex = /(\d{3})(\d{3})(\d{4})/
+      let m
+
+      if ((m = regex.exec(number)) !== null) {
+        return "(" + m[1] + ") " + m[2] + "-" + m[3]
+      }
     }
   },
   methods: {
-    getData() {
-      const self = this
-      Axios.get('https://next.json-generator.com/api/json/get/V1iWQJNIr')
-        .then(function(response) {
-          self.dataTable = response.data
+    fetch() {
+        console.log("Fetching/Searching...")
+        this.loading = true
+        this.getData(this.pagination.page, this.search)
+        .then(data => {
+          console.log(data)
+          this.loading = false
+          this.dataTable = data.data
+          this.total = data.total
+          this.pages = data.last_page
+          this.pagination.totalItems = data.total
+          console.log(this.dataTable)
         })
+    },
+    getData(pageNo, criteria = null) {
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            "bearer": this.$store.state.token
+          },
+          params: {
+            page: pageNo
+          }
+        }
+
+        if (criteria !== null) {
+          config.params.search = criteria
+        }
+
+        Axios.get('http://local.devel/sensational-api/api/v1/customers', config)
+          .then(function(response) {
+            resolve(response.data)
+          }).catch(function(err) {
+            reject(err)
+          })
+      })
+
     }
-  },
-  mounted() {
-    this.getData()
   }
 }
 </script>
