@@ -166,8 +166,9 @@ export default {
           }
         }
 
-        if (criteria !== null) {
+        if (criteria !== "") {
           config.params.search = criteria
+          this.pagination.page = 1
         }
 
         Axios.get('http://local.devel/sensational-api/api/v1/customers', config)
