@@ -145,17 +145,14 @@ export default {
   },
   methods: {
     fetch() {
-        console.log("Fetching/Searching...")
         this.loading = true
         this.getData(this.pagination.page, this.search)
         .then(data => {
-          console.log(data)
           this.loading = false
           this.dataTable = data.data
           this.total = data.total
           this.pages = data.last_page
           this.pagination.totalItems = data.total
-          console.log(this.dataTable)
         })
     },
     getData(pageNo, criteria = null) {
