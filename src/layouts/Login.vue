@@ -1,5 +1,7 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire">   
+    <loading :active.sync="loading" :is-full-page="true">
+    </loading>
     <v-content>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
@@ -28,21 +30,27 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-content>
+    </v-content> 
   </v-app>
 </template>
 
 <script>
   import Cookies from 'browser-cookies'
+  import Loading from 'vue-loading-overlay'
+  import 'vue-loading-overlay/dist/vue-loading.css'
+
 
   export default {
     created () {
       if (Cookies.get('token')) {
         const token = Cookies.get('token')
         this.$store.dispatch('login', {token})
+      } else {
+        this.loading = false
       }
     },
     data: () => ({
+      loading: true,
       drawer: null,
       username: '',
       password: '',
@@ -57,6 +65,9 @@
             this.error = true
           })
       }
+    },
+    components: {
+      Loading
     }
   }
 </script>
