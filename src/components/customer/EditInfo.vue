@@ -76,22 +76,20 @@
                 <v-switch
                   label=""
                   @change="changePrimaryPhone(i)"
-                  :color="isPrimaryColor(i)"
-                  :input-value="isPrimary(i)"
-                  :readonly="viewonly || customer.phone.length == 1 || customer.primaryPhone == i"
+                  :input-value="phone.defaultPhone"
+                  :readonly="viewonly || customer.phone.length === 1 || phone.defaultPhone === 1"
                 ></v-switch>
               </v-flex>
               <v-flex md2 hidden-sm-and-down>
                 <v-switch
                   label="Primary"
                   @change="changePrimaryPhone(i)"
-                  :color="isPrimaryColor(i)"
-                  :input-value="isPrimary(i)"
-                  :readonly="viewonly || customer.phone.length == 1 || customer.primaryPhone == i"
+                  :input-value="phone.defaultPhone"
+                  :readonly="viewonly || customer.phone.length === 1 || phone.defaultPhone === 1"
                 ></v-switch>
               </v-flex>
               <v-flex xs1 md1 class="pt-4"
-                  v-if="i != customer.primaryPhone">
+                  v-if="!phone.defaultPhone">
                 <v-icon medium v-show="!viewonly"
                   @click="removePhone(i)"
                 >delete</v-icon>
@@ -175,7 +173,6 @@
     <v-layout justify-space-between row wrap v-if="!viewonly">
       <v-flex class="text-xs-right">
         <v-btn color="success" @click="save()">Save</v-btn>
-        <v-btn color="error" @click="test()">Test</v-btn>
       </v-flex>
     </v-layout>
     </v-container>
@@ -213,14 +210,10 @@ export default {
       this.customer.phone.splice(index, 1);
     },
     changePrimaryPhone(newVal) {
-      this.customer.primaryPhone = newVal
-      this.$forceUpdate()
-    },
-    isPrimary(val) {
-      if (val == this.customer.primaryPhone) {
-        return true
-      }
-      return false
+      this.customer.phone.forEach(function (el) {
+        el.defaultPhone = 0
+      })
+      this.customer.phone[newVal].defaultPhone = 1
     },
     isPrimaryColor(val) {
       if (val == this.customer.primaryPhone) {
@@ -228,9 +221,10 @@ export default {
       }
     },
     resetData() {
-      this.customer = this.copyObject(blankCustomer)
-      // this.$refs.custInfoForm.resetValidation()
-      this.$forceUpdate()
+      //this.customer = this.copyObject(blankCustomer)
+      //this.$forceUpdate()
+      // Untested Below
+      this.set(this.customer, this.copyObject(blankCustomer))
     },
     fetchData() {
       this.fetchCustomer().then(() => {
@@ -238,6 +232,13 @@ export default {
         this.$refs.custInfoForm.resetValidation()
         this.$forceUpdate()
       })
+    },
+    // Testing Only
+    saveCustomer() {
+      const data = {
+
+      }
+      console.log(data)
     }
   },
   mounted() {
