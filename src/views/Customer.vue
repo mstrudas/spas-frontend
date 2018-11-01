@@ -126,13 +126,6 @@ export default {
   created() {
   },
   methods: {
-  },
-  beforeRouteUpdate(to, from, next) {
-    alert('Route update')
-    next()
-  },
-  beforeRouteLeave(to, from, next) {
-    next()
   }
 }
 
