@@ -139,6 +139,7 @@ export default {
           this.dataTable = data.data
           this.total = data.total
           this.pages = data.last_page
+          this.pagination.totalItems = data.total
         })
     },
     getData(pageNo, criteria = null) {
