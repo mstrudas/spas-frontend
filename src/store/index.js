@@ -17,7 +17,9 @@ export default new Vuex.Store({
     nextPath: '/',
   },
   getters: {
-
+    getToken(state) {
+      return state.token
+    }
   },
   mutations: {
     loggedIn(state, payload) {

@@ -75,7 +75,7 @@ router.beforeEach(function (to, from, next) {
     if (Cookies.get('token')) {
       const token = Cookies.get('token')
       store.dispatch('login', {token})
-      next()
+        .then(() => next())
     } else if (store.state.token != '') {
       Cookies.set('token', store.state.token)
       next()

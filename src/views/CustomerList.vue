@@ -27,7 +27,6 @@
             item-key="clientID"
             class="elevation-1"
           >
-
             <v-alert slot="no-data" :value="true" color="warning" icon="warning">
               No data was found.
             </v-alert>
@@ -84,8 +83,6 @@
 <script>
 import Axios from 'axios'
 
-
-// Axios: https://next.json-generator.com/api/json/get/V1iWQJNIr
 export default {
   name: 'CustomerList',
   components: {
@@ -127,7 +124,7 @@ export default {
       immediate: true
     },
     search: {
-      handler(criteria, old) {
+      handler(criteria) {
         if (criteria.length > 2 || criteria.length === 0) 
           this.fetch()
       }
@@ -142,25 +139,25 @@ export default {
           this.dataTable = data.data
           this.total = data.total
           this.pages = data.last_page
-          this.pagination.totalItems = data.total
+        })
+        .catch(() => {
+          setTimeout(this.fetch(), 500)
         })
     },
     getData(pageNo, criteria = null) {
       return new Promise((resolve, reject) => {
         const config = {
           headers: {
-            "bearer": this.$store.state.token
+            "bearer": this.$store.getters.getToken
           },
           params: {
             page: pageNo
           }
         }
-
         if (criteria !== "") {
           config.params.search = criteria
           this.pagination.page = 1
         }
-
         Axios.get('http://local.devel/sensational-api/api/v1/customers', config)
           .then(function(response) {
             resolve(response.data)
