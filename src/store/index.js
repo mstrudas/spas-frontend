@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import router from '@/router'
 import Axios from 'axios'
 
 // Modules
@@ -11,12 +10,11 @@ import Cookies from 'browser-cookies'
 
 Vue.use(Vuex)
 
-
-
 export default new Vuex.Store({
   state: {
     isAuth: false,
-    token: ''
+    token: '',
+    nextPath: '/',
   },
   getters: {
 
@@ -25,13 +23,14 @@ export default new Vuex.Store({
     loggedIn(state, payload) {
       state.isAuth = true
       state.token = payload.token
-      router.push('/')
     },
     logout(state) {
-      router.push('/login')
       state.token = ''
       Cookies.erase('token')
       state.isAuth = false
+    },
+    preLoginPath(state, payload) {
+      state.nextPath = payload
     }
   },
   actions: {

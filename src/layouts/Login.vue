@@ -35,22 +35,13 @@
 </template>
 
 <script>
-  import Cookies from 'browser-cookies'
   import Loading from 'vue-loading-overlay'
   import 'vue-loading-overlay/dist/vue-loading.css'
 
 
   export default {
-    created () {
-      if (Cookies.get('token')) {
-        const token = Cookies.get('token')
-        this.$store.dispatch('login', {token})
-      } else {
-        this.loading = false
-      }
-    },
     data: () => ({
-      loading: true,
+      loading: false,
       drawer: null,
       username: '',
       password: '',
@@ -60,6 +51,9 @@
     methods: {
       login () {
         this.$store.dispatch('login', {username: this.username, password: this.password})
+          .then(() => {
+            this.$router.push(this.$store.state.nextPath)
+          })
           .catch((err) => {
             this.errMessage = err
             this.error = true

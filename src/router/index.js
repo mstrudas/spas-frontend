@@ -10,6 +10,7 @@ import Print from '../views/Print.vue'
 import NotFound from '@/layouts/404.vue'
 
 import store from '@/store'
+import Cookies from 'browser-cookies'
 
 
 Vue.use(Router)
@@ -19,6 +20,7 @@ const router = new Router({
     {
       path: '/',
       component: Default,
+      meta: { requiresAuth: true },
       children: [
         {
           path: '',
@@ -55,20 +57,32 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      meta: { requiresAuth: false},
+      component: Login,
+      props: (route) => ({nextUrl: route.params.nextUrl})
     },
     {
       path: '*',
       name: 'notFound',
+      meta: { requiresAuth: true },
       component: NotFound
     }
   ]
 })
 
-
-router.beforeEach (function (to, from, next) {
-  if (!store.state.isAuth && to.path !== "/login") {
-    next('/login')
+router.beforeEach(function (to, from, next) {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if (Cookies.get('token')) {
+      const token = Cookies.get('token')
+      store.dispatch('login', {token})
+      next()
+    } else if (store.state.token != '') {
+      Cookies.set('token', store.state.token)
+      next()
+    } else {
+      store.commit('preLoginPath', to.path)
+      router.push('/login')
+    }
   } else {
     next()
   }

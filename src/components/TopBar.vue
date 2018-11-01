@@ -24,9 +24,10 @@
       ])
     },
     methods: {
-      ...mapMutations([
-        'logout'
-      ]),
+      logout() {
+        this.$store.commit('logout')
+        this.$router.push('/login')
+      },
       ...mapMutations('menu', [
         'toggleMenu'
       ])

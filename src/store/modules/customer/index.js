@@ -30,6 +30,15 @@ const state = {
 }
 
 const getters = {
+  
+  axiosConfig(state, getters, rootState) {
+    return {
+      baseURL: 'http://local.devel/sensational-api/',
+      headers: {
+        'bearer': rootState.token
+      }
+    }
+  },
   getMode(state, getters, rootState) {
     let edit = /\/customers\/\d+\/edit/
     if (rootState.route.path == "/customers/new") {
@@ -73,15 +82,11 @@ const actions = {
     dispatch('fetchNotes')
     dispatch('fetchCard')
   },
-  fetchCustomer({ commit }) {
+  fetchCustomer({ commit, rootState, getters }) {
     return new Promise((resolve, reject) => {
-      Axios.get('https://next.json-generator.com/api/json/get/NkmgOparH')
+      Axios.get('api/v1/customers/' + rootState.route.params.id, getters.axiosConfig)
         .then(function(response) {
-          let customer = response.data
-          customer.addressType = response.data.suite_type
-          customer.address2 = response.data.suite
-          delete customer.suite_type
-          delete customer.suite
+          let customer = response.data.data
           commit('SET_CUSTOMER', customer)
           resolve()
       }).catch(() => reject())
