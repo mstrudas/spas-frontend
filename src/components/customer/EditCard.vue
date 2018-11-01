@@ -1,6 +1,6 @@
 <template>
   <v-form ref="cardForm" lazy-validation>
-    <v-progress-linear class="ma-0" :indeterminate="true"></v-progress-linear>
+    <v-progress-linear class="ma-0" :indeterminate="true" v-if="loading"></v-progress-linear>
     <v-container class="ma-0 pa-0">
       <v-layout row>
         <v-flex>
@@ -59,7 +59,8 @@ export default {
   data() {
     return {
       card: {},
-      hideCardNumber: true
+      hideCardNumber: true,
+      loading: true
     }
   },
   computed: {
@@ -73,9 +74,6 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchCard']),
     copyObject: Util.copyObject,
-    reset() {
-      this.$refs.cardForm.reset()
-    },
     resetData() {
       this.card = this.copyObject(blankCard)
       this.$refs.cardForm.resetValidation()
@@ -83,6 +81,7 @@ export default {
     fetchData() {
       this.fetchCard().then(() => {
         this.card = this.copyObject(this.$store.state.customer.card)
+        this.loading = false
       })
     }
   },
