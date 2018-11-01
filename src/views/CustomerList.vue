@@ -140,9 +140,6 @@ export default {
           this.total = data.total
           this.pages = data.last_page
         })
-        .catch(() => {
-          setTimeout(this.fetch(), 500)
-        })
     },
     getData(pageNo, criteria = null) {
       return new Promise((resolve, reject) => {
