@@ -5,5 +5,8 @@ module.exports = {
     disableHostCheck: true,
     overlay: true,
     hot: true
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }
