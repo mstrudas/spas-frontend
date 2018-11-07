@@ -10,6 +10,8 @@ import Cookies from 'browser-cookies'
 
 Vue.use(Vuex)
 
+const SITE = "http://local.devel/sensational-api"
+
 export default new Vuex.Store({
   state: {
     isAuth: false,
@@ -37,14 +39,14 @@ export default new Vuex.Store({
   },
   actions: {
     login({ commit }, payload) {
-      return Axios.post("http://local.devel/sensational-api/api/v1/login", payload)
+      return Axios.post(SITE + "/api/v1/login", payload)
         .then(function (response) {
           return new Promise((resolve, reject) => {
             if (response.status !== 200) {
               reject("Error: Unable to authenticate")
             }
             if (response.data.token) {
-              Cookies.set('token', response.data.token)
+              Cookies.set('token', response.data.token, {expires: 7})
               commit('loggedIn', { token: response.data.token })
               resolve()
             } else {
