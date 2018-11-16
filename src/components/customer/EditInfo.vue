@@ -65,7 +65,7 @@
               </v-flex>
               <v-flex xs2 md2>
                 <v-select
-                  :items="['Home', 'Work', 'Cell', 'Fax', 'Other']"
+                  :items="['Home', 'Work', 'Cell', 'Fax', 'Local', 'Pager', 'Other']"
                   label="Type"
                   v-model="phone.type"
                   :rules="[required]"
@@ -132,7 +132,7 @@
         </v-flex>
         <v-flex xs6 md4 v-if="customer.addressType && customer.addressType != 'None'">
           <v-text-field
-            v-model="customer.address2"
+            v-model="customer.suite"
             :label="customer.addressType + ' #'"
             :rules="[required]"
             :readonly="viewonly"
@@ -221,10 +221,7 @@ export default {
       }
     },
     resetData() {
-      //this.customer = this.copyObject(blankCustomer)
-      //this.$forceUpdate()
-      // Untested Below
-      this.set(this.customer, this.copyObject(blankCustomer))
+      this.$set(this.customer, this.copyObject(blankCustomer))
     },
     fetchData() {
       this.fetchCustomer().then(() => {
@@ -233,11 +230,9 @@ export default {
         this.$forceUpdate()
       })
     },
-    // Testing Only
-    saveCustomer() {
-      const data = {
-
-      }
+    // Testing Only - Real Function will be a Store Action
+    save() {
+      const data = Util.diffObjects(this.$store.state.customer.info, this.customer)
       console.log(data)
     }
   },

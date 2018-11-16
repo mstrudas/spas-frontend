@@ -4,20 +4,11 @@
       <v-flex xs12>
         <v-card>
           <v-card-title>
-            <h3>{{ spa.description ? spa.description : "Spa"}}</h3>
+            <h3>Spa</h3>
             <v-spacer></v-spacer>
             <v-icon color="red" @click="deleteSpa(i)" v-if="!viewonly">delete</v-icon>
           </v-card-title>
           <v-card-text>
-            <v-layout row>
-              <v-flex xs12>
-                <v-text-field
-                  label="Description"
-                  v-model="spa.description"
-                  :readonly="viewonly"
-                ></v-text-field>
-              </v-flex>
-            </v-layout>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field
@@ -251,7 +242,8 @@ export default {
           this.resetData()
         }
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
   components: {
