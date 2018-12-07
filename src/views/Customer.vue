@@ -23,6 +23,7 @@
         <v-toolbar-title>{{ action }} Customer</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-icon v-if="pageType == 'view'" @click="$router.push('/customers/' + $route.params.id + '/edit')">edit</v-icon>
+        <v-btn v-else @click="saveAll()" color="success">Save All</v-btn>
       </v-toolbar>
     </v-flex>
   </v-layout>
@@ -52,15 +53,6 @@
       <v-tab
         ripple
       >
-        Pools
-      </v-tab>
-      <v-tab-item>
-        <edit-pools
-        ></edit-pools>
-      </v-tab-item>
-      <v-tab
-        ripple
-      >
         Spas
       </v-tab>
       <v-tab-item>
@@ -85,7 +77,6 @@ import { mapGetters } from 'vuex'
 
 import EditCustomer from '@/components/customer/EditInfo.vue'
 import EditNotes from '@/components/customer/EditNotes.vue'
-import EditPools from '@/components/customer/EditPools.vue'
 import EditSpas from '@/components/customer/EditSpas.vue'
 import EditCard from '@/components/customer/EditCard.vue'
 
@@ -100,7 +91,6 @@ export default {
   components: {
     EditCustomer,
     EditNotes,
-    EditPools,
     EditSpas,
     EditCard
   },
@@ -112,7 +102,6 @@ export default {
       return {
         customer: this.$store.state.customer.info,
         card: this.$store.state.customer.card,
-        pools: this.$store.state.customer.pools,
         spas: this.$store.state.customer.spas,
         notes: this.$store.state.customer.notes
       }
