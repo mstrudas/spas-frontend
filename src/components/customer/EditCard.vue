@@ -38,7 +38,7 @@
                 <v-flex md2>
                   <v-checkbox
                     label="Prepaid"
-                    v-model="card.prepaid"
+                    v-model="card.prepay"
                   ></v-checkbox>
                 </v-flex>
               </v-layout>
