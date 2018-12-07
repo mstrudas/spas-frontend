@@ -89,7 +89,7 @@ const actions = {
           let customer = response.data.data
           commit('SET_CUSTOMER', customer)
           resolve()
-      }).catch(() => reject())
+      }).catch(() => reject("Unable to retrieve customer information"))
     })
   },
   fetchPools({ commit }) {
@@ -102,14 +102,14 @@ const actions = {
         .catch(() => reject())
     })
   },
-  fetchSpas({ commit }) {
+  fetchSpas({ commit, rootState, getters }) {
     return new Promise((resolve, reject) => {
-      Axios.get('https://next.json-generator.com/api/json/get/Vy9Ia7H8B')
+      Axios.get('api/v1/customers/' + rootState.route.params.id + '/spas', getters.axiosConfig)
         .then(function(response) {
-          commit('SET_SPAS', response.data)
+          commit('SET_SPAS', response.data.data)
           resolve()
         })
-        .catch(() => reject())
+        .catch(() => reject("Unable to retrieve Spas information"))
     })
   },
   fetchNotes({ commit }) {
@@ -122,11 +122,11 @@ const actions = {
         .catch(() => reject())
     })
   },
-  fetchCard({ commit }) {
+  fetchCard({ commit, rootState, getters }) {
     return new Promise((resolve, reject) => {
-      Axios.get('https://next.json-generator.com/api/json/get/Ny3JMESIB')
+      Axios.get('api/v1/customers/' + rootState.route.params.id + '/cards', getters.axiosConfig)
         .then(function(response) {
-          commit('SET_CARD', response.data)
+          commit('SET_CARD', response.data.data)
           resolve()
         })
         .catch(() => reject())
